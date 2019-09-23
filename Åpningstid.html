@@ -1,0 +1,84 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+Dag: <input id="day" onchange="showDayAndTime()" type="range" min="1" max="7"/><br/>
+Time: <input id="hour" onchange="showDayAndTime()" type="range" min="0" max="23"/><br/>
+Minutter: <input id="minute" onchange="showDayAndTime()" type="range" min="0" max="59"/><br/>
+        
+<div id="dayAndTime" style="padding-top: 20px;"></div><br/>
+
+<div id="aaaa"></div>
+<div id="open"></div>
+
+<script type="text/javascript">
+dayOfWeek = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+function showDayAndTime() {
+    var div = document.getElementById('dayAndTime');
+    var d = new Date();
+
+    //var day = document.getElementById('day').value;
+    //var hour = document.getElementById('hour').value;
+    //var minute = document.getElementById('minute').value;
+    //var dayNo = parseInt(day);
+    var hour = d.getHours();
+    var minute = d.getMinutes();
+    var dayNo = d.getDay();
+    var aaaa = document.getElementById('aaaa');
+    var open = document.getElementById('open');
+    console.log(minute);
+        
+    div.innerHTML = dayOfWeek[day] + ' ' + hour + ':' + minute;
+    console.log(dayOfWeek[day]);
+    if(dayNo <= 4){
+        aaaa.innerHTML = "Mandag-Torsdag";
+        if((hour>=11 && hour<17)){
+            open.innerHTML = "Åpen";
+            console.log('open!')
+        }
+        else{
+            open.innerHTML = "Stengt";
+        }
+    }
+    else if(day == 5){
+        aaaa.innerHTML = "Fredag";
+        if((hour>=11 && hour<18)){
+            open.innerHTML = "Åpen";
+        }
+        else{
+            open.innerHTML = "Stengt";
+        }
+    }
+    else if(day == 6){
+        aaaa.innerHTML = "Lørdag";
+        if((hour>=11 && hour<15)){
+            open.innerHTML = "Åpen";
+        }
+        else{
+            open.innerHTML = "Stengt";
+        }
+    }
+    else{
+        aaaa.innerHTML = "Søndag";
+        open.innerHTML = "Stengt";
+    }
+}
+
+function isItOpen(){
+
+}
+</script>
+    
+</body>
+</html>
+
+
+
+
+
+
+

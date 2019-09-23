@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    #lampGrid{
+        background: gray;
+    }
+    .lamp{
+        width: 10px;
+        height: 10px;
+        background: black;
+        margin: 5px;
+        padding: 20px;
+        border-radius: 50%;
+        /* float:left; */
+    }
+    
+    .lampOn{
+        background: yellow;
+    }
+    
+    </style>
+</head>
+<body>
+    
+<div id="lampGrid"></div>
+
+
+
+
+
+<script type="text/javascript">
+lampGrid = document.getElementById('lampGrid');
+for(i=0;i<25;i++){
+    if((i)%5==0){
+        lampGrid.innerHTML += `<div class="lamp" style="float:left;clear:left;"></div>`;
+    }
+    else{
+        lampGrid.innerHTML += `<div class="lamp" style="float:left;"></div>`;
+    }
+}
+   
+var elementsList = document.getElementsByClassName("lamp");
+var randomIndex = Math.floor(Math.random() * elementsList.length);
+var selectedElement = elementsList[randomIndex];
+    
+    
+    
+</script>
+</body>
+</html>
