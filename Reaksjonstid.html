@@ -36,17 +36,28 @@
 lampGrid = document.getElementById('lampGrid');
 for(i=0;i<25;i++){
     if((i)%5==0){
-        lampGrid.innerHTML += `<div class="lamp" style="float:left;clear:left;"></div>`;
+        lampGrid.innerHTML += `<div class="lamp" onclick="turnOnRandom(this)" style="float:left;clear:left;"></div>`;
     }
     else{
-        lampGrid.innerHTML += `<div class="lamp" style="float:left;"></div>`;
+        lampGrid.innerHTML += `<div class="lamp" onclick="turnOnRandom(this)" style="float:left;"></div>`;
     }
 }
-   
-var elementsList = document.getElementsByClassName("lamp");
-var randomIndex = Math.floor(Math.random() * elementsList.length);
-var selectedElement = elementsList[randomIndex];
+
+turnOnRandom();
+function turnOnRandom(element){
+    if(selectedElement == element){
+        console.log("That's the glowing lamp!");
+    }
     
+    var elementsList = document.getElementsByClassName("lamp");
+    var randomIndex = Math.floor(Math.random() * elementsList.length);
+    var selectedElement = elementsList[randomIndex];
+    selectedElement.classList.add('lampOn');
+
+    console.log(selectedElement);
+    console.log(element);
+    
+}
     
     
 </script>
