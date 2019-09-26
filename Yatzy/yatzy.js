@@ -6,26 +6,14 @@ function throwDices(){
     document.getElementById('theButton').innerHTML = "Throw Dices";
 
     if(throwCounter === 1){
-        if(someSelected()){
-            rerollSelected();
-        }
-        else{
-            rerollAll();
-            throwCounter = 3;
-        }
+        rerollSelected();
         showDices();
     }
 
     else if(throwCounter === 2){
-        if(someSelected()){
-            rerollSelected();
-            showUnclickableDices();
-        }
-        else{
-            rerollAll()
-            showDices();
-            throwCounter = 3;
-        }
+        rerollSelected();
+        showUnclickableDices();
+        document.getElementById('theButton').disabled = true;
     }
 
     else{
@@ -33,11 +21,15 @@ function throwDices(){
         showDices();
     }
 
-    throwCounter += 1
-    if(throwCounter > 3){
-        throwCounter = 1;
-    }
+    throwCounter+=1;
     console.log('Next is throw nr: ' + throwCounter);
+}
+
+function submitDices(){
+
+    document.getElementById('theButton').disabled = false;
+    document.getElementById('thrownDices').innerHTML = ''
+    throwCounter = 0;
 }
 
 function someSelected(){
@@ -66,7 +58,6 @@ function rerollSelected(){
     }
 }
 
-showDices(thrownDices)
 
 function showDices(){
     let diceRolls = '';

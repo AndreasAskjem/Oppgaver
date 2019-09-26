@@ -4,6 +4,10 @@ button{
 	font-size: 16px;
 }
 
+#theButton{
+	float: left;
+}
+
 .dice{
 	font-size: 50px;
 	float: left;
