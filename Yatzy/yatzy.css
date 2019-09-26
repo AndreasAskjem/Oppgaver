@@ -1,0 +1,17 @@
+button{
+	height: 35px;
+	width: 140px;
+	font-size: 16px;
+}
+
+.dice{
+	font-size: 50px;
+	float: left;
+	user-select: none;
+	width: 60px;
+	text-align: center;
+}
+
+.highlighted{
+	background: pink;
+}
