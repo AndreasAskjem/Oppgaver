@@ -29,6 +29,8 @@ function submitDices(){
     document.getElementById('theButton').innerHTML = "Throw Dices";
     document.getElementById('theButton').disabled = false;
     document.getElementById('thrownDices').innerHTML = ''
+    addScore();
+    createTable();
     throwCounter = 0;
 }
 
@@ -86,6 +88,7 @@ function selectDice(element){
     else{
         document.getElementById('theButton').disabled = true;
         console.log('BBBBBBB')
+
     }
 }
 
@@ -98,3 +101,132 @@ function someSelected(){
     }
     return(numberOfSelected > 0 ? true : false);
 }
+
+
+
+let player1 = {
+    name: "Player 1",
+    scores: ['&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;'],
+    sum: 0
+};
+
+let player2 = {
+    name: "Player 2",
+    scores: ['&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;'],
+    sum: 0
+};
+
+let player3 = {
+    name: "Player 3",
+    scores: ['&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;'],
+    sum: 0
+};
+
+let playerList = [player1, player2, player3];
+
+
+
+createTable();
+function createTable(){
+
+    let tableHTML = `
+    <table id="leftColumn">
+        <tr>
+            <th>&nbsp;</th>
+        </tr>
+        <tr>
+            <td>One</td>
+        </tr>
+        <tr>
+            <td>Two</td>
+        </tr>
+        <tr>
+            <td>Three</td>
+        </tr>
+        <tr>
+            <td>Four</td>
+        </tr>
+        <tr>
+            <td>Five</td>
+        </tr>
+        <tr>
+            <td>Six</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+        </tr>
+    </table>
+    `;
+
+
+
+    tableHTML += `
+    <table id="scoreTable">
+        <tr>
+    `;
+    for(player in playerList){
+        tableHTML += `<th>${playerList[player].name}</th>
+        `;
+    }
+    tableHTML += `</tr>
+    `
+    for(i=0; i<6; i++){
+        tableHTML += `<tr>
+        `;
+        for(j=0; j< playerList.length; j++){
+            tableHTML += `<td>${playerList[j].scores[i]}</td>`;
+        }
+        tableHTML += `</tr>
+        `;
+    }
+
+
+    tableHTML += `<tr>
+    `;
+    for(i=0; i< playerList.length; i++){
+        tableHTML += `<td>${playerList[i].sum}</td>`;
+    }
+    tableHTML += `</tr>
+    `;
+
+
+    tableHTML += `</table>`;
+    console.log(tableHTML);
+    document.getElementById('scoreTableDiv').innerHTML = tableHTML;
+}
+
+let playerNumber = 0;
+let roundNumber = 0;
+
+function addScore(){
+    playerList[playerNumber].scores[roundNumber] = findRoundScore();
+    playerList[playerNumber].sum += findRoundScore();
+    
+    playerNumber += 1;
+
+    if(playerNumber > playerList.length-1){
+        playerNumber = 0;
+        roundNumber +=1;
+    }
+    if(roundNumber == playerList.length){
+        playerSum = 0;
+
+        playerList[playerNumber].scores[6] = 5;
+    }
+}
+
+function findRoundScore(){
+    let roundScore = 0;
+    for(i in thrownDices){
+        if(thrownDices[i] == roundNumber){
+            roundScore += 1;
+        }
+    }
+    roundScore *= (roundNumber + 1);
+    return(roundScore);
+}
+
+
+
+// sum = thrownDices.every(addScore);
+// return(roundNumber+1);
