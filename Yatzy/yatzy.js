@@ -3,44 +3,35 @@ let diceList = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 let thrownDices = [0, 0, 0, 0, 0];
 throwCounter = 0;
 function throwDices(){
-    document.getElementById('theButton').innerHTML = "Throw Dices";
-
+    document.getElementById('theButton').innerHTML = "Reroll Selected"
     if(throwCounter === 1){
         rerollSelected();
-        showDices();
+        makeDiceElements(true);
     }
 
     else if(throwCounter === 2){
         rerollSelected();
-        showUnclickableDices();
+        makeDiceElements(false);
         document.getElementById('theButton').disabled = true;
     }
 
     else{
         rerollAll();
-        showDices();
+        makeDiceElements(true);
     }
 
+    document.getElementById('theButton').disabled = true;
     throwCounter+=1;
-    console.log('Next is throw nr: ' + throwCounter);
+    console.log('This was throw nr: ' + throwCounter);
 }
 
 function submitDices(){
-
+    document.getElementById('theButton').innerHTML = "Throw Dices";
     document.getElementById('theButton').disabled = false;
     document.getElementById('thrownDices').innerHTML = ''
     throwCounter = 0;
 }
 
-function someSelected(){
-    let numberOfSelected = 0;
-    for(i=0; i<5; i++){
-        if(document.getElementById(`dice${i}`).classList.contains('highlighted')){
-            numberOfSelected++;
-        }
-    }
-    return(numberOfSelected > 0 ? true : false);
-}
 
 function rerollAll(){
     for(i=0; i<5; i++){
@@ -59,27 +50,28 @@ function rerollSelected(){
 }
 
 
-function showDices(){
+function makeDiceElements(addOnClick){
     let diceRolls = '';
+    let x = '';
+    if(addOnClick){
+        x = `onclick="selectDice(this)"`
+    }
+    else{
+        x = `style="color: gray;"`;
+    }
+
     for(i=0; i<5; i++){
         diceRolls += `<div id="dice${i}"
         class="dice"
-        onclick="selectDice(this)">
+        ${x}>
         ${diceList[thrownDices[i]]}
         </div>`;
     }
-    document.getElementById('thrownDices').innerHTML = diceRolls;
+    showDices(diceRolls);    
 }
 
-function showUnclickableDices(){
-    let diceRolls = '';
-    for(i=0; i<5; i++){
-        diceRolls += `<div id="dice${i}"
-        class="dice"
-        style="color:gray;">
-        ${diceList[thrownDices[i]]}
-        </div>`;
-    }
+
+function showDices(diceRolls){
     document.getElementById('thrownDices').innerHTML = diceRolls;
 }
 
@@ -88,9 +80,21 @@ function selectDice(element){
     element.classList.toggle('highlighted');
     let button = document.getElementById('theButton');
     if(someSelected()){
+        document.getElementById('theButton').disabled = false;
         button.innerHTML = 'Reroll Selected';
     }
     else{
-        button.innerHTML = 'Reroll All';
+        document.getElementById('theButton').disabled = true;
+        console.log('BBBBBBB')
     }
+}
+
+function someSelected(){
+    let numberOfSelected = 0;
+    for(i=0; i<5; i++){
+        if(document.getElementById(`dice${i}`).classList.contains('highlighted')){
+            numberOfSelected++;
+        }
+    }
+    return(numberOfSelected > 0 ? true : false);
 }
