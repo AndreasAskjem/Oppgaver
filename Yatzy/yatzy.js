@@ -1,3 +1,39 @@
+// Saves names as objects before replacing the HTML of the page with the game.
+//////////////////////////////////////////////////////////////////////////////
+let playerList = []
+function nameIsSubmitted(){
+    let submittedName = document.getElementById('username').value;
+    document.getElementById('username').value = '';
+
+    playerList.push({
+        name: submittedName,
+        scores: ['&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;'],
+        sum: 0
+    })
+    console.log(submittedName);
+}
+
+function changeHTML(){
+    
+    if(playerList.length > 0){
+        document.getElementById('mainContent').innerHTML = `
+    <button type="button" id="theButton" onclick="throwDices()">Throw Dices</button>
+    <button type="button" id="submitButton" onclick="submitDices()">Submit Dices</button>
+    <div id="thrownDices"></div>
+    <br/><br/><br/><br/>
+    <div id="scoreTableDiv"></div>
+    `;
+
+        createTable()
+    }
+    else{alert("You can't play without any players!");}
+}
+
+
+
+
+// The main game.
+//////////////////////////////////////////////////////////////////////////////
 let diceList = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 
 let thrownDices = [0, 0, 0, 0, 0];
@@ -104,29 +140,8 @@ function someSelected(){
 
 
 
-let player1 = {
-    name: "Player 1",
-    scores: ['&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;'],
-    sum: 0
-};
 
-let player2 = {
-    name: "Player 2",
-    scores: ['&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;'],
-    sum: 0
-};
-
-let player3 = {
-    name: "Player 3",
-    scores: ['&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;'],
-    sum: 0
-};
-
-let playerList = [player1, player2, player3];
-
-
-
-createTable();
+//createTable();
 function createTable(){
 
     let tableHTML = `
@@ -225,8 +240,3 @@ function findRoundScore(){
     roundScore *= (roundNumber + 1);
     return(roundScore);
 }
-
-
-
-// sum = thrownDices.every(addScore);
-// return(roundNumber+1);
