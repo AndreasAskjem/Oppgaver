@@ -147,28 +147,28 @@ function createTable(){
     let tableHTML = `
     <table id="leftColumn">
         <tr>
-            <th>&nbsp;</th>
+            <th>Names</th>
         </tr>
         <tr>
-            <td>One</td>
+            <th>One</th>
         </tr>
         <tr>
-            <td>Two</td>
+            <th>Two</th>
         </tr>
         <tr>
-            <td>Three</td>
+            <th>Three</th>
         </tr>
         <tr>
-            <td>Four</td>
+            <th>Four</th>
         </tr>
         <tr>
-            <td>Five</td>
+            <th>Five</th>
         </tr>
         <tr>
-            <td>Six</td>
+            <th>Six</th>
         </tr>
         <tr>
-            <td>Total</td>
+            <th>Total</th>
         </tr>
     </table>
     `;
@@ -199,7 +199,7 @@ function createTable(){
     tableHTML += `<tr>
     `;
     for(i=0; i< playerList.length; i++){
-        tableHTML += `<td>${playerList[i].sum}</td>`;
+        tableHTML += `<th>${playerList[i].sum}</th>`;
     }
     tableHTML += `</tr>
     `;
@@ -240,3 +240,28 @@ function findRoundScore(){
     roundScore *= (roundNumber + 1);
     return(roundScore);
 }
+
+
+
+
+
+
+////////////////////////////////////////////
+//let roundNumber = 1;
+function createRow(){
+    let rowHTML = `<tr>
+    `;
+    for(player in playerList){
+        rowHTML += `<td>${playerList[player].scores[roundNumber]}</td>
+        `;
+    }
+    rowHTML += `</tr>
+    `;
+    return(rowHTML);
+}
+
+for(j=0; j< playerList.length; j++){
+    tableHTML += `<td>${playerList[player].scores[i]}</td>`;
+}
+tableHTML += `</tr>
+`;
