@@ -1,6 +1,7 @@
 // Saves names as objects before replacing the HTML of the page with the game.
 //////////////////////////////////////////////////////////////////////////////
 let playerList = []
+document.getElementById('username').focus();
 function nameIsSubmitted(){
     let submittedName = document.getElementById('username').value;
     document.getElementById('username').value = '';
@@ -170,9 +171,10 @@ function addScore(){
 }
 
 
-// A switch is used to calculate the and update the player score, with a different case for each round.
+// A switch is used to calculate and update the player score, with a different case for each round.
 function findRoundScore(){
     let roundScore = 0;
+    let check = 0;
     console.log('hello');
     // sD = sortedDices, it took a lot of space to write the whole thing every time.
     let sD = thrownDices.sort(function(a, b){return b - a}); // I don't know how this works.
@@ -206,7 +208,7 @@ function findRoundScore(){
             roundScore = playerList[playerNumber].scoreFirstHalf;
             break;
         case 7: // Bonus
-            if(playerList[playerNumber].scoreFirstHalf >= 63){
+            if(playerList[playerNumber].scoreFirstHalf >= 42){
                 roundScore = 35;
             }
             break;
@@ -223,15 +225,15 @@ function findRoundScore(){
             let anotherPair = 0;
             for(i=0; i<sD.length-1; i++){
                 if(onePair==0 && sD[i]==sD[i+1]){
-                    onePair = sD[i]*2;
+                    onePair = sD[i];
                     i++;
                 }
-                else if(onePair>0 && sD[i]==sD[i+1]){
-                    anotherPair = sD[i]*2
+                else if(onePair>0 && sD[i]==sD[i+1] && sD[i]!==onePair){
+                    anotherPair = sD[i];
                 }
 
                 if(anotherPair>0){
-                    roundScore = onePair + anotherPair;
+                    roundScore = (onePair + anotherPair)*2;
                 }
             }
             break;
@@ -252,7 +254,7 @@ function findRoundScore(){
             }
             break;
         case 12: // Full House
-            if(sD[0]==sD[1] && sD[3]==sD[4]){
+            if(sD[0]==sD[1] && sD[3]==sD[4] && sD[0]!==sD[4]){
                 if(sD[2]==sD[0] || sD[2]==sD[4]){
                     roundScore = sD[0] + sD[1] + sD[2] + sD[3] + sD[4];
                 }
@@ -260,18 +262,30 @@ function findRoundScore(){
             break;
         case 13: // Small Straight.
             console.log('Sm straight');
-            if(sD[0]==(sD[1]-1) && sD[0]==(sD[2]-2) && sD[0]==(sD[3]-3)){
-                roundScore = sD[0] + sD[1] + sD[2] + sD[3];
-                console.log('the if');
+            //let check = 0;
+            for(i=0; i<sD.length; i++){
+                console.log(sD[i]);
+                if(sD[i]+i == 5){
+                    check++;
+                }
             }
-            else if(sD[1]==(sD[2]-1) && sD[1]==(sD[3]-2) && sD[1]==(sD[4]-3)){
-                roundScore = sD[1] + sD[2] + sD[3] + sD[4];
-                console.log('the else if');
+            if(check==5){
+                roundScore = 15;
             }
-            console.log('RoundScore:' + roundScore);
             break;
         case 14: // Large Straight
-            let consecutiveNumbers = 0;
+            for(i=0; i<sD.length; i++){
+                console.log(sD[i]);
+                if(sD[i]+i == 6){
+                    check++;
+                }
+            }
+            if(check==5){
+                roundScore = 20;
+            }
+            break;
+
+            /*let consecutiveNumbers = 0;
             for(i=0; i<sD.length-1; i++){
                 if(sD[i] == (sD[i+1]-1)){
                     consecutiveNumbers++;
@@ -281,15 +295,15 @@ function findRoundScore(){
             if(consecutiveNumbers==4){
                 roundScore = sD[0] + sD[1] + sD[2] + sD[3] + sD[4];
             }
-            break;
+            break;*/
         case 15: // Chance
             roundScore = sD[0] + sD[1] + sD[2] + sD[3] + sD[4];
             break;
         case 16: // YATZY
-            let check = 0;
+            //let check = 0;
             for(i=0; i<sD.length; i++){
                 if(sD[0]==sD[i]){
-                    check += 1;
+                    check++;
                 }
             }
             if(check==5){
