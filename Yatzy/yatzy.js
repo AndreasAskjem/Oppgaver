@@ -20,8 +20,8 @@ function changeHTML(){
     
     if(playerList.length > 0){
         document.getElementById('mainContent').innerHTML = `
-    <button type="button" id="theButton" onclick="throwDices()">Throw Dices</button>
-    <button type="button" id="submitButton" onclick="submitDices()">Submit Dices</button>
+    <button type="button" id="theThrowButton" onclick="throwDices()">Throw Dices</button>
+    <button type="button" id="submitButton" onclick="submitDices()" disabled="true">Submit Dices</button>
     <div id="thrownDices"></div>
     <br/><br/><br/><br/>
     <div id="scoreTableDiv"></div>
@@ -42,7 +42,9 @@ let diceList = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 let thrownDices = [0, 0, 0, 0, 0];
 throwCounter = 0;
 function throwDices(){
-    document.getElementById('theButton').innerHTML = "Reroll Selected"
+    let throwButton = document.getElementById('theThrowButton');
+    throwButton.innerHTML = "Reroll Selected"
+    document.getElementById('submitButton').disabled = false;
     if(throwCounter === 1){
         rerollSelected();
         makeDiceElements(true);
@@ -51,7 +53,7 @@ function throwDices(){
     else if(throwCounter === 2){
         rerollSelected();
         makeDiceElements(false);
-        document.getElementById('theButton').disabled = true;
+        throwButton.disabled = true;
     }
 
     else{
@@ -59,14 +61,15 @@ function throwDices(){
         makeDiceElements(true);
     }
 
-    document.getElementById('theButton').disabled = true;
+    throwButton.disabled = true;
     throwCounter+=1;
     //console.log('This was throw nr: ' + throwCounter);
 }
 
 function submitDices(){
-    document.getElementById('theButton').innerHTML = "Throw Dices";
-    document.getElementById('theButton').disabled = false;
+    document.getElementById('theThrowButton').innerHTML = "Throw Dices";
+    document.getElementById('theThrowButton').disabled = false;
+    document.getElementById('submitButton').disabled = true;
     document.getElementById('thrownDices').innerHTML = ''
     addScore();
     createTable();
@@ -119,13 +122,13 @@ function showDices(diceRolls){
 
 function selectDice(element){
     element.classList.toggle('highlighted');
-    let button = document.getElementById('theButton');
+    let button = document.getElementById('theThrowButton');
     if(someSelected()){
-        document.getElementById('theButton').disabled = false;
+        button.disabled = false;
         button.innerHTML = 'Reroll Selected';
     }
     else{
-        document.getElementById('theButton').disabled = true;
+        button.disabled = true;
         //console.log('BBBBBBB')
 
     }
@@ -158,30 +161,16 @@ function addScore(){
         roundNumber++;
     }
 
+   createTable();
 
-    /*
-    if(roundNumber == 6){
-        for(i in playerList){
-            //console.log('playerNumber ' + playerNumber);
-            findRoundScore();
-            playerNumber++;
-        }
-        playerNumber = 0;
-        roundNumber++;
-
-        for(i in playerList){
-            findRoundScore();
-            playerNumber++;
-        }
-        playerNumber = 0;
-        roundNumber++;
+    // Score sums and bonus don't need any user input, so they're automatically filled when they're reached.
+    if(roundNumber == 6 || roundNumber == 7 || roundNumber == 17){
+        addScore();
     }
-    */
-
-    createTable();
 }
-console.log
 
+
+// A switch is used to calculate the and update the player score, with a different case for each round.
 function findRoundScore(){
     let roundScore = 0;
     console.log('hello');
@@ -270,18 +259,23 @@ function findRoundScore(){
             }
             break;
         case 13: // Small Straight.
+            console.log('Sm straight');
             if(sD[0]==(sD[1]-1) && sD[0]==(sD[2]-2) && sD[0]==(sD[3]-3)){
                 roundScore = sD[0] + sD[1] + sD[2] + sD[3];
+                console.log('the if');
             }
             else if(sD[1]==(sD[2]-1) && sD[1]==(sD[3]-2) && sD[1]==(sD[4]-3)){
                 roundScore = sD[1] + sD[2] + sD[3] + sD[4];
+                console.log('the else if');
             }
+            console.log('RoundScore:' + roundScore);
             break;
         case 14: // Large Straight
             let consecutiveNumbers = 0;
             for(i=0; i<sD.length-1; i++){
                 if(sD[i] == (sD[i+1]-1)){
                     consecutiveNumbers++;
+                    console.log('Consecutive numbers: ' + consecutiveNumbers);
                 }
             }
             if(consecutiveNumbers==4){
