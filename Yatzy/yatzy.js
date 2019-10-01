@@ -14,7 +14,7 @@ function nameIsSubmitted(){
         scoreFirstHalf: 0,
         scoreTotal: 0
     });
-    //console.log(submittedName);
+    document.getElementById('mainContent').innerHTML += `<li>${submittedName}</li>`
 }
 
 function changeHTML(){
