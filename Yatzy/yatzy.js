@@ -1,6 +1,6 @@
 // Saves names as objects before replacing the HTML of the page with the game.
 //////////////////////////////////////////////////////////////////////////////
-let playerList = []
+let playerList = [];
 document.getElementById('username').focus();
 function nameIsSubmitted(){
     let submittedName = document.getElementById('username').value;
@@ -13,7 +13,7 @@ function nameIsSubmitted(){
         sum: 0,
         scoreFirstHalf: 0,
         scoreTotal: 0
-    })
+    });
     //console.log(submittedName);
 }
 
@@ -44,7 +44,7 @@ let thrownDices = [0, 0, 0, 0, 0];
 throwCounter = 0;
 function throwDices(){
     let throwButton = document.getElementById('theThrowButton');
-    throwButton.innerHTML = "Reroll Selected"
+    throwButton.innerHTML = "Reroll Selected";
     document.getElementById('submitButton').disabled = false;
     if(throwCounter === 1){
         rerollSelected();
@@ -71,7 +71,7 @@ function submitDices(){
     document.getElementById('theThrowButton').innerHTML = "Throw Dices";
     document.getElementById('theThrowButton').disabled = false;
     document.getElementById('submitButton').disabled = true;
-    document.getElementById('thrownDices').innerHTML = ''
+    document.getElementById('thrownDices').innerHTML = '';
     addScore();
     createTable();
     throwCounter = 0;
@@ -99,7 +99,7 @@ function makeDiceElements(addOnClick){
     let diceRolls = '';
     let x = '';
     if(addOnClick){
-        x = `onclick="selectDice(this)"`
+        x = `onclick="selectDice(this)"`;
     }
     else{
         x = `style="color: gray;"`;
@@ -130,8 +130,6 @@ function selectDice(element){
     }
     else{
         button.disabled = true;
-        //console.log('BBBBBBB')
-
     }
 }
 
@@ -261,10 +259,7 @@ function findRoundScore(){
             }
             break;
         case 13: // Small Straight.
-            console.log('Sm straight');
-            //let check = 0;
             for(i=0; i<sD.length; i++){
-                console.log(sD[i]);
                 if(sD[i]+i == 5){
                     check++;
                 }
@@ -275,7 +270,6 @@ function findRoundScore(){
             break;
         case 14: // Large Straight
             for(i=0; i<sD.length; i++){
-                console.log(sD[i]);
                 if(sD[i]+i == 6){
                     check++;
                 }
@@ -284,23 +278,10 @@ function findRoundScore(){
                 roundScore = 20;
             }
             break;
-
-            /*let consecutiveNumbers = 0;
-            for(i=0; i<sD.length-1; i++){
-                if(sD[i] == (sD[i+1]-1)){
-                    consecutiveNumbers++;
-                    console.log('Consecutive numbers: ' + consecutiveNumbers);
-                }
-            }
-            if(consecutiveNumbers==4){
-                roundScore = sD[0] + sD[1] + sD[2] + sD[3] + sD[4];
-            }
-            break;*/
         case 15: // Chance
             roundScore = sD[0] + sD[1] + sD[2] + sD[3] + sD[4];
             break;
         case 16: // YATZY
-            //let check = 0;
             for(i=0; i<sD.length; i++){
                 if(sD[0]==sD[i]){
                     check++;
@@ -317,11 +298,10 @@ function findRoundScore(){
     
     playerList[playerNumber].scoreTotal += roundScore;
     return(roundScore);
-    //playerList[playerNumber].scores[roundNumber] = roundScore;
-    //createTable();
 }
 
 
+// Creates the table and inserts the correct values.
 function createTable(){
     let tableHTML;
 
@@ -355,7 +335,7 @@ function createRow(currentRow){
     let style;
     for(player in playerList){
         style = 'd';
-        if(currentRow == 6 || currentRow == 7 || currentRow == 17){
+        if(currentRow == 6 || currentRow == 7 || currentRow == 17 || (roundNumber==currentRow && player==playerNumber)){
             style = 'h';
         }
         rowHTML += `<t${style}>${playerList[player].scores[currentRow]}</t${style}>
