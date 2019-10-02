@@ -3,8 +3,12 @@
 let playerList = [];
 document.getElementById('username').focus();
 function nameIsSubmitted(){
-    let submittedName = document.getElementById('username').value;
-    document.getElementById('username').value = '';
+    inputField = document.getElementById('username');
+    let submittedName = inputField.value;
+    if(submittedName == ''){
+        inputField.focus();
+        return;
+    }
     
     playerList.push({
         name: submittedName,
@@ -13,8 +17,10 @@ function nameIsSubmitted(){
         scoreFirstHalf: 0,
         scoreTotal: 0
     });
-    document.getElementById('mainContent').innerHTML += `<li>${submittedName}</li>`
-    document.getElementById('username').focus();
+    document.getElementById('mainContent').innerHTML += `<li>${submittedName}</li>`;
+    inputField.value = '';
+    document.getElementById('username').focus(); // using "inputField.focus()" doesn't work here for some reason
+    return;
 }
 
 function changeHTML(){

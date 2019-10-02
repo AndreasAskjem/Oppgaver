@@ -33,6 +33,7 @@ table, tr, td, th{
 	height: 28px;
 	border-collapse: collapse;
 	padding: 3px;
+	min-width: 35px;
 }
 
 #scoreTable td{
@@ -55,4 +56,5 @@ table, tr, td, th{
 	border-top-width: 2px;
 	border-left-width: 2px;
 	border-bottom-width: 2px;
+	text-align: left;
 }
