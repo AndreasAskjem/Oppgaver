@@ -371,7 +371,7 @@ let leftColumn = `
         <th>Six</th>
     </tr>
     <tr>
-        <th>Total 1</th>
+        <th>Upper Total</th>
     </tr>
     <tr>
         <th>Bonus</th>
@@ -404,7 +404,7 @@ let leftColumn = `
         <th>YATZY</th>
     </tr>
     <tr>
-        <th>Total 2</th>
+        <th>Total</th>
     </tr>
 </table>
 `;
