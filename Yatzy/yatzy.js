@@ -173,7 +173,6 @@ function addScore(){
 function findRoundScore(){
     let roundScore = 0;
     let check = 0;
-    console.log('hello');
     // sD = sortedDices, it took a lot of space to write the whole thing every time.
     let sD = thrownDices.sort(function(a, b){return b - a}); // I don't know how this works.
 
@@ -184,9 +183,6 @@ function findRoundScore(){
         }
     }
 
-    console.log('sorted dices ' + sD);
-    console.log('round ' + roundNumber);
-    console.log('player ' + playerNumber);
     switch(roundNumber){
         case 0:
         case 1:
@@ -207,7 +203,7 @@ function findRoundScore(){
             break;
         case 7: // Bonus
             if(playerList[playerNumber].scoreFirstHalf >= 42){
-                roundScore = 35;
+                roundScore = 50;
             }
             break;
         case 8: // 1 pair
@@ -353,58 +349,61 @@ let leftColumn = `
         <th>Names</th>
     </tr>
     <tr>
-        <th>One</th>
+        <th title="Only ⚀'s count">One</th>
     </tr>
     <tr>
-        <th>Two</th>
+        <th title="Only ⚁'s count">Two</th>
     </tr>
     <tr>
-        <th>Three</th>
+        <th title="Only ⚂'s count">Three</th>
     </tr>
     <tr>
-        <th>Four</th>
+        <th title="Only ⚃'s count">Four</th>
     </tr>
     <tr>
-        <th>Five</th>
+        <th title="Only ⚄'s count">Five</th>
     </tr>
     <tr>
-        <th>Six</th>
+        <th title="Only ⚅'s count">Six</th>
     </tr>
     <tr>
-        <th>Upper Total</th>
+        <th title="Total points of the first section">Upper Total</th>
     </tr>
     <tr>
-        <th>Bonus</th>
+        <th title="50 bonus points if Upper Total is at least 42">Bonus</th>
     </tr>
     <tr>
-        <th>1 Pair</th>
+        <th title="Sum of the best pair">1 Pair</th>
     </tr>
     <tr>
-        <th>2 Pairs</th>
+        <th title="Sum of the 2 best pairs
+The pairs must be different">2 Pairs</th>
     </tr>
     <tr>
-        <th>3 of a kind</th>
+        <th title="3 of a kind">3 of a kind</th>
     </tr>
     <tr>
-        <th>4 of a kind</th>
+        <th title="4 of a kind">4 of a kind</th>
     </tr>
     <tr>
-        <th>Full House</th>
+        <th title="3 of a kind + a pair
+Must be different">Full House</th>
     </tr>
     <tr>
-        <th>Sm Straight</th>
+        <th title="All the numbers from 1 to 5">Sm Straight</th>
     </tr>
     <tr>
-        <th>Lg Straight</th>
+        <th title="All the numbers from 2 to 6">Lg Straight</th>
     </tr>
     <tr>
-        <th>Chance</th>
+        <th title="Sum of all 5 dices">Chance</th>
     </tr>
     <tr>
-        <th>YATZY</th>
+        <th title="5 OF A KIND!
+GIVES 50 POINTS!">YATZY</th>
     </tr>
     <tr>
-        <th>Total</th>
+        <th title="And the winner is...">Total</th>
     </tr>
 </table>
 `;
