@@ -5,8 +5,7 @@ document.getElementById('username').focus();
 function nameIsSubmitted(){
     let submittedName = document.getElementById('username').value;
     document.getElementById('username').value = '';
-    document.getElementById('username').focus();
-
+    
     playerList.push({
         name: submittedName,
         scores: Array(18).fill('&nbsp;'),
@@ -15,6 +14,7 @@ function nameIsSubmitted(){
         scoreTotal: 0
     });
     document.getElementById('mainContent').innerHTML += `<li>${submittedName}</li>`
+    document.getElementById('username').focus();
 }
 
 function changeHTML(){
