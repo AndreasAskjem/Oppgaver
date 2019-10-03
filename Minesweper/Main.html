@@ -9,7 +9,26 @@
 </head>
 <body>
     <h1>Minesweeper</h1>
-    <div>options</div>
+    <div onclick="toggleOptions()">Options</div>
+    <div id="difficultyOptions" class="hide">
+        <div onclick="easy()" style="float: left">Easy&nbsp;</div>
+        <div onclick="medium()" style="float: left">&nbsp;Medium&nbsp;</div>
+        <div onclick="hard()">&nbsp;Hard</div>
+    </div>
+
+    <div
+        id="flagCounter"
+        class="square"
+        style="background: white;
+               border: black solid 2px;
+               box-sizing: border-box">0
+    </div>
+    <div
+        id="flagBox"
+        class="square gray"
+        style="box-sizing: border-box"
+        onclick="flagMode()">🚩
+    </div>
     
     <div id="mainContent"></div>
 

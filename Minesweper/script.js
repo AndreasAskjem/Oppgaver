@@ -1,37 +1,46 @@
 function easy(){
     createGridHTML(9, 9, 10);
     createGridData(9, 9, 10);
+    document.getElementById('difficultyOptions').classList.toggle('hide');
 }
 
 function medium(){
     createGridHTML(16, 16, 40);
+    createGridData(16, 16, 40);
+    document.getElementById('difficultyOptions').classList.toggle('hide');
 }
 
 function hard(){
     createGridHTML(30, 16, 99);
+    createGridData(30, 16, 99);
+    document.getElementById('difficultyOptions').classList.toggle('hide');
 }
 
 let gridData = [];
 
 function createGridData(columns, rows, mines){
-
+    flagCount = mines;
+    document.getElementById('flagCounter').innerHTML = mines;
     mineList = getMineList(columns, rows, mines);
     mineCoordinates = getMineCoordinates(columns, rows, mineList);
     //adjacentMines = getAdjacentMines(columns, rows, mineCoordinates);
     console.log(mineCoordinates);
 
+    gridData = [];
     let gridRow;
     //let mineCount = 0;
     for(row=0; row<rows; row++){
         gridRow = [];
         for(column=0; column<columns; column++){
             //console.log('c:' + column + ', r: ' + row);
+            //console.log('C: ' + column)
+            //console.log('R: ' + row)
             gridRow.push(createSquareData(column, row, mineCoordinates[column][row]));
             //mineCount++;
         }
         gridData.push(gridRow);
     }
-    adjacentMines = getAdjacentMines(columns, rows, mineCoordinates);
+    getAdjacentMines(columns, rows, mineCoordinates);
 }
 
 function createSquareData(column, row, mine){
@@ -57,7 +66,7 @@ function getMineList(columns, rows, mines){
             mineArray.push(false);
         }
     }
-    console.log(mineArray);
+    //console.log(mineArray);
 
     let shuffledMines = [];
     let temp;
@@ -68,7 +77,7 @@ function getMineList(columns, rows, mines){
         temp = mineArray.splice(randomSquare, 1);
         shuffledMines.push(temp[0]);
     }
-    console.log(shuffledMines);
+    //console.log(shuffledMines);
     return(shuffledMines);
 }
 
@@ -92,7 +101,7 @@ function getAdjacentMines(columns, rows, mineCoordinates){
     for(row=0; row<rows; row++){
         for(column=0; column<columns; column++){
             adjacentMines = checkSuroundingSquares(column, row, mineCoordinates)
-            console.log(adjacentMines);
+            //console.log(adjacentMines);
             gridData[column][row].adjacentMines = adjacentMines;
         }
     }
@@ -103,7 +112,7 @@ function checkSuroundingSquares(column, row, mineCoordinates){
     for(i=-1; i<2; i++){
         for(j=-1; j<2; j++){
             try{
-                if(gridData[column+i][row+j].hasMine){
+                if(gridData[column+j][row+i].hasMine){
                     adjacentMines++;
                 }
             }
@@ -121,7 +130,7 @@ function createSquareHTML(column, row, firstInRow){
     if(firstInRow){
         clearLeft = 'clearLeft';
     }
-    squareHTML = `<div id="c${column}r${row}" onclick="openSquare(this, ${column}, ${row})" class="gray square ${clearLeft}"></div>`;
+    squareHTML = `<div id="c${column}r${row}" onclick="openSquare(${column}, ${row}, this)" class="gray square ${clearLeft}"></div>`;
     return(squareHTML)
 }
 
@@ -139,14 +148,49 @@ function createGridHTML(columns, rows, mines){
     return(gridHTML);
 }
 
-function openSquare(element, column, row){
-    console.log(element);
-    console.log(row + ' ' + column);
-    console.log(gridData[column][row].hasMine);
+letFlagCount = 0;
+function openSquare(column, row, element){
+    //console.log(element);
+    //console.log(row + ' ' + column);
+    //console.log(gridData[column][row].hasMine);
+
+    if(flagPlacingMode){
+        if(element.innerHTML == ''){
+            element.innerHTML = '🚩';
+            flagCount--;
+        }
+        else if(element.innerHTML == '🚩'){
+            element.innerHTML = '';
+            flagCount++;
+        }
+        else{
+            return;
+        }
+        document.getElementById('flagCounter').innerHTML = flagCount;
+        return;
+    }
+
     if(gridData[column][row].hasMine){
         element.innerHTML = '💣';
+        element.style.background = "red";
     }
     else{
         element.innerHTML = gridData[column][row].adjacentMines;
+        element.style.background = "lightgray";
     }
+}
+
+let flagPlacingMode = false;
+function flagMode(){
+    flagPlacingMode = !flagPlacingMode;
+    if(flagPlacingMode){
+        document.getElementById('flagBox').style.border = "red solid 2px";
+    }
+    else{
+        document.getElementById('flagBox').style.border = "none";
+    }
+}
+
+function toggleOptions(){
+    document.getElementById('difficultyOptions').classList.toggle('hide');
 }

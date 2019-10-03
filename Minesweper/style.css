@@ -1,13 +1,16 @@
-
+.hide{
+    display: none;
+}
 
 .square{
     height: 30px;
     width: 30px;
     float: left;
-    margin: 0.5px;
-    font-size: 20px;
+    margin: 1px;
+    font-size: 18px;
     text-align: center;
     user-select: none;
+    vertical-align: middle;
 }
 
 
