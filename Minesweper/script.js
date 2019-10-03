@@ -1,5 +1,6 @@
 function easy(){
-    createGridHTML(8, 8, 10);
+    createGridHTML(9, 9, 10);
+    createGridData(9, 9, 10);
 }
 
 function medium(){
@@ -13,31 +14,37 @@ function hard(){
 let gridData = [];
 
 function createGridData(columns, rows, mines){
+
+    mineList = getMineList(columns, rows, mines);
+    mineCoordinates = getMineCoordinates(columns, rows, mineList);
+    //adjacentMines = getAdjacentMines(columns, rows, mineCoordinates);
+    console.log(mineCoordinates);
+
     let gridRow;
-    //let gridData = [];
+    //let mineCount = 0;
     for(row=0; row<rows; row++){
         gridRow = [];
         for(column=0; column<columns; column++){
-            console.log('c:' + column + ', r: ' + row);
-            gridRow.push(createSquareData(column, row));
+            //console.log('c:' + column + ', r: ' + row);
+            gridRow.push(createSquareData(column, row, mineCoordinates[column][row]));
+            //mineCount++;
         }
         gridData.push(gridRow);
     }
-
-    minePlacements = getMinePlacements(columns, rows, mines);
+    adjacentMines = getAdjacentMines(columns, rows, mineCoordinates);
 }
 
-function createSquareData(column, row){
+function createSquareData(column, row, mine){
     square = {
         column: column,
         row: row,
-        hasMine: false,
+        hasMine: mine,
         adjacentMines: 0
     };
     return(square);
 }
 
-function getMinePlacements(columns, rows, mines){
+function getMineList(columns, rows, mines){
     let size = columns*rows;
     let mineArray = []
 
@@ -62,8 +69,49 @@ function getMinePlacements(columns, rows, mines){
         shuffledMines.push(temp[0]);
     }
     console.log(shuffledMines);
+    return(shuffledMines);
 }
 
+function getMineCoordinates(columns, rows, mineList){
+    let mineCount = 0;
+    let mineRow = [];
+    let mineCoordinates = [];
+    for(row=0; row<rows; row++){
+        mineRow = [];
+        for(column=0; column<columns; column++){
+            mineRow.push(mineList[mineCount]);
+            mineCount++;
+        }
+        mineCoordinates.push(mineRow);
+    }
+    return(mineCoordinates);
+}
+
+function getAdjacentMines(columns, rows, mineCoordinates){
+    let adjacentMines;
+    for(row=0; row<rows; row++){
+        for(column=0; column<columns; column++){
+            adjacentMines = checkSuroundingSquares(column, row, mineCoordinates)
+            console.log(adjacentMines);
+            gridData[column][row].adjacentMines = adjacentMines;
+        }
+    }
+}
+
+function checkSuroundingSquares(column, row, mineCoordinates){
+    let adjacentMines = 0;
+    for(i=-1; i<2; i++){
+        for(j=-1; j<2; j++){
+            try{
+                if(gridData[column+i][row+j].hasMine){
+                    adjacentMines++;
+                }
+            }
+            catch{}
+        }
+    }
+    return(adjacentMines)
+}
 
 
 
@@ -92,5 +140,13 @@ function createGridHTML(columns, rows, mines){
 }
 
 function openSquare(element, column, row){
-    console.log(row + ' ' + column)
+    console.log(element);
+    console.log(row + ' ' + column);
+    console.log(gridData[column][row].hasMine);
+    if(gridData[column][row].hasMine){
+        element.innerHTML = '💣';
+    }
+    else{
+        element.innerHTML = gridData[column][row].adjacentMines;
+    }
 }
