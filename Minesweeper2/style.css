@@ -1,0 +1,10 @@
+table, tr, td{
+    height: 30px;
+    width: 30px;
+    float: left;
+    margin: 1px;
+    font-size: 18px;
+    text-align: center;
+    user-select: none;
+    vertical-align: middle;
+}
