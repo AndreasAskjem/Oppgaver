@@ -1,3 +1,7 @@
+
+let mineFieldView = document.getElementById('mineField');
+//console.log(mineFieldView.innerHTML);
+
 totalBombs = 10;
 
 let size = {
@@ -11,16 +15,17 @@ let square = {
     adjacentBombs: 0
 }
 let row = Array(size.width).fill(square);
-let minefield = Array(size.height).fill(row);
+let mineField = Array(size.height).fill(row);
+
+//mineField[0][3].hasBomb = true;
 
 makeTable()
 function makeTable(){
-    let mineField = document.getElementById('mineField');
-    console.log(mineField.innerHTML);
+    console.log(mineField);
     let row;
     let mineFieldHTML;
     for(i=0; i<size.height; i++){
-        row = '';
+        let viewRow = mineFieldView.insertRow();
         for(j=0; j<size.width; j++){
             row = `<td></td>`;
         }
