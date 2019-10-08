@@ -60,43 +60,43 @@ function clickedSquare(mouseClick){
                 firstClick = false;
                 return;
             }
-            
             clickedSquare(mouseClick);
-            
         }
         firstClick = false;
     }
 
     openCell(rowIndex, cellIndex);
-
-    
     showMineField();
 }
 
-function openCell(rowIndex, cellIndex){
-    let modelCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
-    modelCell.isOpen = true;
-    if(modelCell.adjacentMines===0){
-        openAdjacentCells(rowIndex, cellIndex);
-    }
-}/////////////////////////// This needs improvements!!!!!!!!!!!!!!!!!!
 
-function openAdjacentCells(rowIndex, cellIndex){
-    for(i=-1; i<2; i++){
-        for(j=-1; j<2; j++){
-            let rowCheck = rowIndex + i;
-            let cellCheck = cellIndex + j;
-            
-            if(rowCheck>=0 && rowCheck<size.height && cellCheck>=0 && cellCheck<size.width){
-                modelCell = mineFieldModel.rows[rowCheck].cells[cellCheck];
-                if(!modelCell.hasMine && !modelCell.isOpen){
-                    openCell(rowCheck, cellCheck);
-                }
-            }
-            
-        }
+
+// Opens a cell.
+// Opens all adjacent cells if the cell has no adjacent mines.
+function openCell(rowIndex, cellIndex){
+    if(rowIndex<0 || rowIndex>=size.height || cellIndex<0 || cellIndex>=size.width){
+        return;
     }
-}/////////////////////////// This needs improvements!!!!!!!!!!!!!!!!!!!
+    let modelCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
+    if(modelCell.isOpen){
+        return;
+    }
+    
+    modelCell.isOpen = true;
+
+    if(modelCell.adjacentMines===0){
+        openCell(rowIndex-1, cellIndex-1);
+        openCell(rowIndex-1, cellIndex);
+        openCell(rowIndex-1, cellIndex+1);
+        openCell(rowIndex, cellIndex-1);
+        openCell(rowIndex, cellIndex+1);
+        openCell(rowIndex+1, cellIndex-1);
+        openCell(rowIndex+1, cellIndex);
+        openCell(rowIndex+1, cellIndex+1);
+    }
+}
+
+
 
 function init(size){
     mineFieldModel = {};
