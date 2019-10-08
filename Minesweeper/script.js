@@ -66,7 +66,7 @@ function getMineList(columns, rows, mines){
             mineArray.push(false);
         }
     }
-    //console.log(mineArray);
+    console.log(mineArray);
 
     let shuffledMines = [];
     let temp;

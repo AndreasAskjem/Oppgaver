@@ -1,10 +1,14 @@
-table, tr, td{
+tr, td{
+    border: 1px solid gray;
     height: 30px;
     width: 30px;
-    float: left;
-    margin: 1px;
     font-size: 18px;
     text-align: center;
     user-select: none;
     vertical-align: middle;
+}
+
+table{
+    border-spacing: 0;
+    border-collapse: collapse;
 }
