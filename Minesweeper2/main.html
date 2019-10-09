@@ -11,6 +11,22 @@
 
     <h1>Minesweeper</h1>
 
+    <button type="button" onclick="setDifficulty(8, 8, 10)">Easy</button>
+    <button type="button" onclick="setDifficulty(16, 16, 40)">Medium</button>
+    <button type="button" onclick="setDifficulty(16, 30, 99)">Hard</button>
+    <br/><br/>
+
+    <div
+        id="flagCounter"
+        class="square">0
+    </div>
+    <div
+        id="flagBox"
+        class="square gray"
+        onclick="toggleFlagMode()">🚩
+    </div>
+    <br/><br/><br/>
+
     <table id="mineField"></table>
 
     <script src="script.js"></script>

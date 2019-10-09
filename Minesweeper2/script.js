@@ -6,11 +6,14 @@ let size = {
     width: 8,
     height: 8
 };
+let unopenedEmptyCells = size.width*size.height - totalMines;
+let availableFlags = totalMines;
+let flagMode = false;
 
 init(size);
 showMineField();
 
-
+// Creates the shown HTML, with the correct values inserted.
 function showMineField(){
     mineFieldView.innerHTML = '';
     for(i=0; i<size.height; i++){
@@ -31,24 +34,68 @@ function showMineField(){
                 }
                 else{
                     viewCell.style.backgroundColor = 'lightgray';
-
                 }
             }
             else{
+                if(modelCell.hasFlag){
+                    viewCell.innerHTML = '🚩';
+                }
+                else{
+                    viewCell.innerHTML = '';
+                }
                 viewCell.style.backgroundColor = 'darkgray';
-                viewCell.innerHTML = '';
                 viewCell.addEventListener("click", clickedSquare, false);
             }
         }
     }
+
+    let flagDiv = document.getElementById('flagBox');
+    if(flagMode){
+        flagDiv.classList.add('redBorder');
+    }
+    else{
+        flagDiv.classList.remove('redBorder');
+    }
+
+    document.getElementById('flagCounter').innerHTML = availableFlags;
 }
 
+function setDifficulty(newHeight, newWidth, newTotalMines){
+    size.height = newHeight;
+    size.width = newWidth;
+    totalMines = newTotalMines;
+    unopenedEmptyCells = size.width*size.height - totalMines;
+    availableFlags = totalMines;
+    flagMode = false;
+    firstClick=true;
+    init(size);
+    showMineField();
+}
+
+function toggleFlagMode(){
+    flagMode = !flagMode;
+    showMineField();
+}
+
+// Runs every time a cell is clicked.
 let firstClick = true;
 let minePlacementRetries = 0;
 function clickedSquare(mouseClick){
     let rowIndex = mouseClick.srcElement.parentElement.sectionRowIndex;
     let cellIndex = mouseClick.srcElement.cellIndex;
     let modelCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
+
+    if(flagMode && !firstClick){
+        modelCell.hasFlag = !modelCell.hasFlag;
+        if(modelCell.hasFlag){
+            availableFlags--;
+        }
+        else{
+            availableFlags++;
+        }
+        showMineField();
+        return;
+    }
 
     // Generates new mine arrangements either until the clicked field
     // has no adjacent mines, or it has tried 100 times.
@@ -65,14 +112,19 @@ function clickedSquare(mouseClick){
         firstClick = false;
     }
 
+    if(modelCell.hasFlag){
+        return;
+    }
+    // Opens the clicked cell and updates the shown minefield.
     openCell(rowIndex, cellIndex);
     showMineField();
 }
 
 
-
 // Opens a cell.
 // Opens all adjacent cells if the cell has no adjacent mines.
+// Repeats until every blank cell connected to the clicked cell has been turned,
+// and and all cells next to those blank cells has been opened too.
 function openCell(rowIndex, cellIndex){
     if(rowIndex<0 || rowIndex>=size.height || cellIndex<0 || cellIndex>=size.width){
         return;
@@ -81,8 +133,11 @@ function openCell(rowIndex, cellIndex){
     if(modelCell.isOpen){
         return;
     }
-    
+    if(!modelCell.hasMine){
+        unopenedEmptyCells--;
+    }
     modelCell.isOpen = true;
+    console.log(unopenedEmptyCells);
 
     if(modelCell.adjacentMines===0){
         openCell(rowIndex-1, cellIndex-1);
@@ -110,6 +165,7 @@ function init(size){
             newCell.isOpen = false;
             newCell.hasMine = false;
             newCell.adjacentMines = 0;
+            newCell.hasFlag = false;
             newRow.cells.push(newCell);
         }
         mineFieldModel.rows.push(newRow);
@@ -119,8 +175,10 @@ function init(size){
 
 
 function placeMines(){
+    // Gets a shiffled list with the correct amount of mines.
     mineArray = generateMines()
 
+    // Places the mines in the cell objects
     let mineIndex = 0;
     for(rowIndex=0; rowIndex<size.height; rowIndex++){
         for(cellIndex=0; cellIndex<size.width; cellIndex++){
@@ -130,7 +188,7 @@ function placeMines(){
         }
     }
 
-    
+    // Sends the coordinates of every cell to the function getAdjacentMines().
     for(rowIndex=0; rowIndex<size.height; rowIndex++){
         for(cellIndex=0; cellIndex<size.width; cellIndex++){
             currentCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
@@ -139,6 +197,8 @@ function placeMines(){
     }
 }
 
+// Counts the number of mines around the recieved coordinates
+// and puts it in the correct cell object.
 function getAdjacentMines(rowIndex, cellIndex){
     let mineCount = 0;
     for(i=-1; i<2; i++){
@@ -159,6 +219,7 @@ function getAdjacentMines(rowIndex, cellIndex){
 
 
 
+// Makes an array with true/false to represent the mines.
 function generateMines(){
     boardSize = size.height * size.width;
     mineArray = [];
@@ -173,6 +234,7 @@ function generateMines(){
     return(shuffleArray(mineArray, boardSize));
 }
 
+//Shuffles the array.
 function shuffleArray(mineArray, boardSize){
     let randomElement;
     let shuffledArray = [];
