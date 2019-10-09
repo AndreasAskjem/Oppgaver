@@ -3,8 +3,8 @@ let mineFieldModel;
 let mineFieldView = document.getElementById('mineField');
 let totalMines = 10;
 let size = {
-    width: 8,
-    height: 8
+    width: 9,
+    height: 9
 };
 let unopenedEmptyCells = size.width*size.height - totalMines;
 let availableFlags = totalMines;
@@ -51,6 +51,7 @@ function showMineField(){
                 else if (modelCell.adjacentMines > 0){
                     viewCell.style.backgroundColor = 'lightgray';
                     viewCell.innerHTML = modelCell.adjacentMines;
+                    viewCell.classList.add('x' + modelCell.adjacentMines);
                 }
                 else{
                     viewCell.style.backgroundColor = 'lightgray';
@@ -82,6 +83,9 @@ function showMineField(){
     }
     else if(result==='youLost'){
         resultText.innerHTML = 'Sorry, you lost.';
+    }
+    else{
+        resultText.innerHTML = '';
     }
 }
 
