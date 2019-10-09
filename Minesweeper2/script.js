@@ -144,7 +144,6 @@ function clickedSquare(mouseClick){
     showMineField();
 }
 
-
 // Opens a cell.
 // Opens all adjacent cells if the cell has no adjacent mines.
 // Repeats until every blank cell connected to the clicked cell has been turned,
@@ -177,15 +176,15 @@ function openCell(rowIndex, cellIndex){
 }
 
 
+// Sets the conditions to stop the game.
+// Runs if a mine is opened, or if every non-mine field is opened.
 function endTheGame(clickedCellHadMine){
     if(clickedCellHadMine){
         result = 'youLost';
         openAllMines();
-        console.log('You Lost!');
     }
     else{
         result = 'youWon';
-        console.log('You Won!');
     }
 }
 
@@ -227,13 +226,12 @@ function getAdjacentMines(rowIndex, cellIndex){
                     mineCount++;
                 }
             }
-            
         }
     }
     return(mineCount);
 }
 
-
+// Opens every mine. Only runs if a mine is opened.
 function openAllMines(){
     for(rowIndex=0; rowIndex<size.height; rowIndex++){
         for(cellIndex=0; cellIndex<size.width; cellIndex++){
@@ -251,12 +249,7 @@ function generateMines(){
     boardSize = size.height * size.width;
     mineArray = [];
     for(i=0; i<boardSize; i++){
-        if(i<totalMines){
-            mineArray.push(true);
-        }
-        else{
-            mineArray.push(false);
-        }
+        i < totalMines ? mineArray.push(true) : mineArray.push(false);
     }
     return(shuffleArray(mineArray, boardSize));
 }
