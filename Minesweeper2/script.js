@@ -9,9 +9,29 @@ let size = {
 let unopenedEmptyCells = size.width*size.height - totalMines;
 let availableFlags = totalMines;
 let flagMode = false;
+let result = '';
 
 init(size);
 showMineField();
+
+function init(size){
+    mineFieldModel = {};
+    mineFieldModel.rows = [];
+
+    for(i=0; i<size.height; i++){
+        let newRow = {};
+        newRow.cells = [];
+        for(j=0; j<size.width; j++){
+            let newCell = {};
+            newCell.isOpen = false;
+            newCell.hasMine = false;
+            newCell.adjacentMines = 0;
+            newCell.hasFlag = false;
+            newRow.cells.push(newCell);
+        }
+        mineFieldModel.rows.push(newRow);
+    }
+}
 
 // Creates the shown HTML, with the correct values inserted.
 function showMineField(){
@@ -44,22 +64,28 @@ function showMineField(){
                     viewCell.innerHTML = '';
                 }
                 viewCell.style.backgroundColor = 'darkgray';
-                viewCell.addEventListener("click", clickedSquare, false);
+                if(result===''){
+                    viewCell.addEventListener("click", clickedSquare, false);
+                }
             }
         }
     }
 
     let flagDiv = document.getElementById('flagBox');
-    if(flagMode){
-        flagDiv.classList.add('redBorder');
-    }
-    else{
-        flagDiv.classList.remove('redBorder');
-    }
-
+    flagMode ? flagDiv.classList.add('redBorder') : flagDiv.classList.remove('redBorder');
+    
     document.getElementById('flagCounter').innerHTML = availableFlags;
+
+    let resultText = document.getElementById('resultDiv')
+    if(result==='youWon'){
+        resultText.innerHTML = 'Congratulations! You won!';
+    }
+    else if(result==='youLost'){
+        resultText.innerHTML = 'Sorry, you lost.';
+    }
 }
 
+// Resets some variables, sets new values to others, and draws the board again.
 function setDifficulty(newHeight, newWidth, newTotalMines){
     size.height = newHeight;
     size.width = newWidth;
@@ -67,7 +93,8 @@ function setDifficulty(newHeight, newWidth, newTotalMines){
     unopenedEmptyCells = size.width*size.height - totalMines;
     availableFlags = totalMines;
     flagMode = false;
-    firstClick=true;
+    firstClick = true;
+    result = '';
     init(size);
     showMineField();
 }
@@ -87,12 +114,7 @@ function clickedSquare(mouseClick){
 
     if(flagMode && !firstClick){
         modelCell.hasFlag = !modelCell.hasFlag;
-        if(modelCell.hasFlag){
-            availableFlags--;
-        }
-        else{
-            availableFlags++;
-        }
+        modelCell.hasFlag ? availableFlags-- : availableFlags ++;
         showMineField();
         return;
     }
@@ -112,9 +134,7 @@ function clickedSquare(mouseClick){
         firstClick = false;
     }
 
-    if(modelCell.hasFlag){
-        return;
-    }
+    if(modelCell.hasFlag){return;}
     // Opens the clicked cell and updates the shown minefield.
     openCell(rowIndex, cellIndex);
     showMineField();
@@ -130,14 +150,15 @@ function openCell(rowIndex, cellIndex){
         return;
     }
     let modelCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
-    if(modelCell.isOpen){
-        return;
-    }
-    if(!modelCell.hasMine){
-        unopenedEmptyCells--;
-    }
+    if(modelCell.isOpen){return;}
+    if(!modelCell.hasMine){unopenedEmptyCells--;}
     modelCell.isOpen = true;
     console.log(unopenedEmptyCells);
+
+    if(unopenedEmptyCells === 0 || modelCell.hasMine){
+        endTheGame(modelCell.hasMine);
+        return;
+    }
 
     if(modelCell.adjacentMines===0){
         openCell(rowIndex-1, cellIndex-1);
@@ -152,26 +173,16 @@ function openCell(rowIndex, cellIndex){
 }
 
 
-
-function init(size){
-    mineFieldModel = {};
-    mineFieldModel.rows = [];
-
-    for(i=0; i<size.height; i++){
-        let newRow = {};
-        newRow.cells = [];
-        for(j=0; j<size.width; j++){
-            let newCell = {};
-            newCell.isOpen = false;
-            newCell.hasMine = false;
-            newCell.adjacentMines = 0;
-            newCell.hasFlag = false;
-            newRow.cells.push(newCell);
-        }
-        mineFieldModel.rows.push(newRow);
+function endTheGame(clickedCellHadMine){
+    if(clickedCellHadMine){
+        result = 'youLost';
+        console.log('You Lost!');
+    }
+    else{
+        result = 'youWon';
+        console.log('You Won!');
     }
 }
-
 
 
 function placeMines(){
@@ -216,7 +227,6 @@ function getAdjacentMines(rowIndex, cellIndex){
     }
     return(mineCount);
 }
-
 
 
 // Makes an array with true/false to represent the mines.
