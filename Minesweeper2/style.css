@@ -1,23 +1,29 @@
 .square{
-    height: 34px;
-    width: 34px;
+    height: 40px;
+    width: 40px;
     text-align: center;
     box-sizing: border-box;
+    user-select: none;
 }
 
 #flagCounter{
     background: white;
     border: black solid 2px;
     float: left;
+    padding-top: 6px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 #flagBox{
     float: left;
     background: gray;
+    padding-top: 5px;
 }
 
 .redBorder{
     border: 2px solid red;
+    padding-top: 3px;
 }
 
 tr, td{
