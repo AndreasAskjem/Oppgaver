@@ -180,6 +180,7 @@ function openCell(rowIndex, cellIndex){
 function endTheGame(clickedCellHadMine){
     if(clickedCellHadMine){
         result = 'youLost';
+        openAllMines();
         console.log('You Lost!');
     }
     else{
@@ -230,6 +231,18 @@ function getAdjacentMines(rowIndex, cellIndex){
         }
     }
     return(mineCount);
+}
+
+
+function openAllMines(){
+    for(rowIndex=0; rowIndex<size.height; rowIndex++){
+        for(cellIndex=0; cellIndex<size.width; cellIndex++){
+            currentCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
+            if(currentCell.hasMine){
+                currentCell.isOpen = true;
+            }
+        }
+    }
 }
 
 
