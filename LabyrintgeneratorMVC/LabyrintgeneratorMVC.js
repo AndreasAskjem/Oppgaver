@@ -87,8 +87,8 @@ function makeEntranceAndExit(){
     exit = Math.floor(Math.random()*size1+1)*2-1;
     // Top/bottom entrances
     if(0.5 < Math.random()){
-    mazeModel.rows[0].cells[opening].visible = false;
-    mazeModel.rows[size2-1].cells[exit].visible = false;
+        mazeModel.rows[0].cells[opening].visible = false;
+        mazeModel.rows[size2-1].cells[exit].visible = false;
     }
     // Left/right entrances
     else{
