@@ -43,6 +43,9 @@ function createNewSnakeHead() {
         nextBodyPart: snakeModel.snakeHead
     };
 }
+
+
+let bodyPosition;
 function move() {
     if (!snakeModel.direction) return;
     snakeModel.snakeHead = createNewSnakeHead();
@@ -52,12 +55,13 @@ function move() {
         // Slette siste element
         var bodyPart = snakeModel.snakeHead;
         var lastBodyPart = null;
-        let isHead = true;
+        //let isHead = true;
+        bodyPosition = [];
         while (bodyPart.nextBodyPart != null) {
-            if(isHead){
-                bodyPart.style.backgroundColor = 'blue';
-                isHead = false;
-            }
+            
+            //Make a list of the positions for every body part.
+            bodyPosition.push([bodyPart.y, bodyPart.x]);
+            
             lastBodyPart = bodyPart;
             bodyPart = bodyPart.nextBodyPart;
         }

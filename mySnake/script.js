@@ -11,11 +11,9 @@ showBoard();
 function initSnakePosition(){
     snake = {}
     let startHeight = Math.floor(boardSize.height/2);
-    snake.position = [[2, startHeight],[1, startHeight],[0, startHeight]];
+    snake.position = [[startHeight, 2],[startHeight, 1],[startHeight, 0]]; //[y,x]
     snake.size = 3;
 }
-
-
 
 function initBoardModel(){
     boardModel = {};
@@ -36,9 +34,16 @@ function initBoardModel(){
 }
 
 function placeSnake(){
-    if(snake.position[0] == [rowIndex, cellIndex]){
-        newCell.hasHead = true;
+    for(index in snake.position){
+
+        if(index==0){
+            boardModel.rows.hasHead = true;
+        }
+        else{
+            snake.position[0] == [rowIndex, cellIndex]
+        }
     }
+    
 }
 
 let boardView = document.getElementById('snakeTable');
