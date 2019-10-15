@@ -49,6 +49,21 @@ function init(){
     }
 }
 
+function makeEntranceAndExit(){
+    opening = Math.floor(Math.random()*size1+1)*2-1;
+    exit = Math.floor(Math.random()*size1+1)*2-1;
+    // Top/bottom entrances
+    if(0.5 < Math.random()){
+        mazeModel.rows[0].cells[opening].visible = false;
+        mazeModel.rows[size2-1].cells[exit].visible = false;
+    }
+    // Left/right entrances
+    else{
+        mazeModel.rows[opening].cells[0].visible = false;
+        mazeModel.rows[exit].cells[size2-1].visible = false;
+    }
+}
+
 function showMaze(){
     mazeView.innerHTML = '';
 
@@ -80,19 +95,4 @@ function clickedWall(mouseClick){
 
     modelCell.visible = !modelCell.visible;
     showMaze();
-}
-
-function makeEntranceAndExit(){
-    opening = Math.floor(Math.random()*size1+1)*2-1;
-    exit = Math.floor(Math.random()*size1+1)*2-1;
-    // Top/bottom entrances
-    if(0.5 < Math.random()){
-        mazeModel.rows[0].cells[opening].visible = false;
-        mazeModel.rows[size2-1].cells[exit].visible = false;
-    }
-    // Left/right entrances
-    else{
-        mazeModel.rows[opening].cells[0].visible = false;
-        mazeModel.rows[exit].cells[size2-1].visible = false;
-    }
 }
