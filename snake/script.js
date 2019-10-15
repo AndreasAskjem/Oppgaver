@@ -1,7 +1,7 @@
 var snakeModel;
 initModel();
 updateView();
-//////////////////////setInterval(move, 200);
+let gameTick;
 function updateView() {
     var snakeTable = document.getElementById('snakeTable');
     snakeTable.innerHTML = '';
@@ -26,9 +26,9 @@ function initModel() {
     snakeModel = { size: 10 };
     snakeModel.snakeHead = {x: 2, y:Math.floor(snakeModel.size/2)};
     snakeModel.food = createRandomPosition();
-    snakeModel.growCount = 3;
+    snakeModel.growCount = 2;
     snakeModel.nextBodyPart = null;
-    snakeModel.direction = { x: 1, y: 0 }; ////
+    snakeModel.direction = { x: 1, y: 0 };
 }
 function createRandomPosition() {
     return {
@@ -52,7 +52,12 @@ function move() {
         // Slette siste element
         var bodyPart = snakeModel.snakeHead;
         var lastBodyPart = null;
+        let isHead = true;
         while (bodyPart.nextBodyPart != null) {
+            if(isHead){
+                bodyPart.style.backgroundColor = 'blue';
+                isHead = false;
+            }
             lastBodyPart = bodyPart;
             bodyPart = bodyPart.nextBodyPart;
         }
@@ -65,10 +70,21 @@ function move() {
         snakeModel.food = createRandomPosition();
         snakeModel.growCount = 1;
     }
+    snakeModel.latestMove = snakeModel.direction;
+
     updateView();
 }
+
+let gameIsActive = false
 function controlSnake(e) {
-    d = snakeModel.direction;
+    d = snakeModel.latestMove;
+
+    if(!gameIsActive){
+        gameTick = setInterval(move, 200);
+        gameIsActive = true;
+        return;
+    }
+
     if (e.keyCode == 37 && d.x != 1) { // left
         snakeModel.direction = { x: -1, y: 0 };
     } else if (e.keyCode == 39 && d.x != -1) { // right
@@ -78,4 +94,13 @@ function controlSnake(e) {
     } else if (e.keyCode == 40 && d.y != -1) { // down
         snakeModel.direction = { x: 0, y: 1 };
     }
+
+    else if(e.keyCode == 27){
+        stopMove();
+    }
+}
+
+function stopMove(){
+    clearInterval(gameTick);
+    gameIsActive = false;
 }
