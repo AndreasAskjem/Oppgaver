@@ -11,8 +11,11 @@ table{
     clear: left;
 }
 
-.snake{
-    background-color: black;
+.snakeHead{
+    background-color: black !important;
+}
+.snakeBody{
+    background-color: gray;
 }
 
 /*.snakeBody{

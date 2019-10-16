@@ -28,13 +28,13 @@ function initModel() {
     snakeModel.food = createRandomPosition();
     snakeModel.growCount = 2;
     snakeModel.nextBodyPart = null;
-    snakeModel.direction = { x: 1, y: 0 };
+    snakeModel.direction = { x: 0, y: 0 };
 }
 function createRandomPosition() {
     return {
         x: Math.floor(Math.random() * snakeModel.size),
         y: Math.floor(Math.random() * snakeModel.size)
-    }
+    };
 }
 function createNewSnakeHead() {
     return {
@@ -45,10 +45,36 @@ function createNewSnakeHead() {
 }
 
 
-let bodyPosition;
+let bodyPosition = [2, Math.floor(snakeModel.size/2)];
 function move() {
     if (!snakeModel.direction) return;
     snakeModel.snakeHead = createNewSnakeHead();
+
+
+
+    let head = bodyPosition.splice(0, 1);
+    head=head[0]
+    let body = bodyPosition;
+    let stop = false;
+    for(part in body){
+        if(body[part][0]==head[0] && body[part][1]==head[1]){
+            stop = true;
+        }
+
+        if(head[0]>=snakeModel.size || head[1]>=snakeModel.size || head[0]<0 || head[1]<0){
+            stop = true;
+        }
+    }
+    console.log(1);
+    if(stop){
+        stopMove();
+        return;
+    }
+    console.log(2);
+
+
+
+
     if (snakeModel.growCount > 0) {
         snakeModel.growCount--;
     } else {
@@ -76,18 +102,15 @@ function move() {
     }
     snakeModel.latestMove = snakeModel.direction;
 
+    
     updateView();
 }
 
 let gameIsActive = false
 function controlSnake(e) {
-    d = snakeModel.latestMove;
+    d = snakeModel.direction;
 
-    if(!gameIsActive){
-        gameTick = setInterval(move, 200);
-        gameIsActive = true;
-        return;
-    }
+    console.log(d);
 
     if (e.keyCode == 37 && d.x != 1) { // left
         snakeModel.direction = { x: -1, y: 0 };
@@ -101,6 +124,12 @@ function controlSnake(e) {
 
     else if(e.keyCode == 27){
         stopMove();
+    }
+
+    if(!gameIsActive){
+        gameTick = setInterval(move, 200);
+        gameIsActive = true;
+        //return;
     }
 }
 

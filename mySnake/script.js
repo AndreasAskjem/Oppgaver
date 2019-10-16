@@ -4,15 +4,29 @@ let boardSize = {
     width: 15
 }
 let boardModel;
+let boardView = document.getElementById('snakeTable');
+let startLength = 3;
+
+
 initSnakePosition();
 initBoardModel();
+placeSnake();
+placeApple();
 showBoard();
+
+let gameTick = setInterval(move, 200);
+
 
 function initSnakePosition(){
     snake = {}
+    snake.position = [];
     let startHeight = Math.floor(boardSize.height/2);
-    snake.position = [[startHeight, 2],[startHeight, 1],[startHeight, 0]]; //[y,x]
-    snake.size = 3;
+    for(i=startLength; i>0; i--){
+        snake.position.push({y: startHeight, x: i-1});
+    }
+    snake.size = startLength;
+    snake.direction = {y: 0, x:1};
+    snake.nextDirection = {y: 0, x:1}
 }
 
 function initBoardModel(){
@@ -25,7 +39,7 @@ function initBoardModel(){
         for(cellIndex=0; cellIndex<boardSize.width; cellIndex++){
             let newCell = {};
             newCell.hasHead = false;
-            newCell.hasSnake = false;
+            newCell.hasBody = false;
             newCell.hasApple = false;
             newRow.cells.push(newCell);
         }
@@ -33,33 +47,129 @@ function initBoardModel(){
     }
 }
 
-function placeSnake(){
-    for(index in snake.position){
+function placeApple(){
+    let y;
+    let x;
+    do{
+        y = Math.floor(Math.random()*boardSize.height);
+        x = Math.floor(Math.random()*boardSize.width);
+    } while(boardModel.rows[y].cells[x].hasBody);
 
-        if(index==0){
-            boardModel.rows.hasHead = true;
-        }
-        else{
-            snake.position[0] == [rowIndex, cellIndex]
-        }
-    }
-    
+    boardModel.rows[y].cells[x].hasApple = true;
 }
 
-let boardView = document.getElementById('snakeTable');
+function placeSnake(){
+    for(index in snake.position){
+        y = snake.position[index].y;
+        x = snake.position[index].x;
+        if(index==0){
+            boardModel.rows[y].cells[x].hasHead = true;
+            boardModel.rows[y].cells[x].hasBody = true;
+        }
+        else{
+            boardModel.rows[y].cells[x].hasHead = false;
+            boardModel.rows[y].cells[x].hasBody = true;
+        }
+    }
+}
+
+
 
 function showBoard(){
     boardView.innerHTML = '';
-    for(rowIndex=0; rowIndex<size.height; rowIndex++){
-        let viewRow = mineFieldView.insertRow();
-        let modelRow = mineFieldModel.rows[rowIndex];
-        for(cellIndex=0; cellIndex<size.width; cellIndex++){
+    for(rowIndex=0; rowIndex<boardSize.height; rowIndex++){
+        let viewRow = boardView.insertRow();
+        let modelRow = boardModel.rows[rowIndex];
+        for(cellIndex=0; cellIndex<boardSize.width; cellIndex++){
             let viewCell = viewRow.insertCell();
             let modelCell = modelRow.cells[cellIndex];
 
-            if(modelCell){
-                b;
+            if(modelCell.hasApple){
+                viewCell.classList.add('apple');
+            }
+            if(modelCell.hasHead){
+                viewCell.classList.add('snakeHead');
+            }
+            else if(modelCell.hasBody){
+                viewCell.classList.add('snakeBody');
+                try{
+                    viewCell.classList.remove('snakeHead');
+                } catch{console.log('awd')}
             }
         }
     }
+}
+
+function controlSnake(e){
+    d = snake.direction;
+
+    //console.log(d);
+
+    if (e.keyCode == 37 && d.x != 1) { // left
+        snake.nextDirection = { y: 0, x: -1 };
+    } else if (e.keyCode == 39 && d.x != -1) { // right
+        snake.nextDirection = { y: 0, x: 1 };
+    } else if (e.keyCode == 38 && d.y != 1) { // up
+        snake.nextDirection = { y: -1, x: 0 };
+    } else if (e.keyCode == 40 && d.y != -1) { // down
+        snake.nextDirection = { y: 1, x: 0 };
+    }
+    //move();
+}
+
+function move(){
+    let head = snake.position[0];
+    snake.direction = checkDirection(snake.direction, snake.nextDirection);
+    d = snake.direction;
+    let newHead = {y: head.y + d.y, x: head.x + d.x}
+    snake.position.splice(0, 0, newHead);
+
+
+    // Crash tests
+    if(newHead.y<0 || newHead.y>=boardSize.height|| newHead.x<0 || newHead.x>=boardSize.width){
+        stopMove();
+        alert('You crashed with the edge!');
+        alert(`You ate ${snake.size-startLength} apples!`)
+        return;
+    }
+    for(part=1; part<snake.size; part++){
+        if(newHead.x == snake.position[part].x && newHead.y == snake.position[part].y){
+            stopMove();
+            alert('You crashed with yourself!');
+            alert(`You ate ${snake.size-startLength} apples!`)
+            return;
+        }
+    }
+
+
+
+    
+    if(boardModel.rows[newHead.y].cells[newHead.x].hasApple){
+        boardModel.rows[newHead.y].cells[newHead.x].hasApple = false;
+        snake.size++;
+        placeApple();
+    }
+    else{
+        let tail = snake.position.splice(snake.size, 1);
+        tail = tail[0];
+        boardModel.rows[tail.y].cells[tail.x].hasBody = false;
+    }
+
+
+    
+
+    placeSnake();
+    showBoard();
+}
+
+function checkDirection(d, nd){ // (direction, nextDirection)
+    if(d.x != 0 && nd.x == 0 || d.x == 0 && nd.x != 0){
+        return(nd);
+    }
+    return(d);
+}
+
+
+function stopMove(){
+    clearInterval(gameTick);
 }
