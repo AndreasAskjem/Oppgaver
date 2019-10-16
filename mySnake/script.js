@@ -128,7 +128,17 @@ function move(){
     d = snake.direction;
     let newHead = {y: head.y + d.y, x: head.x + d.x}
     
-
+    snake.position.splice(0, 0, newHead);
+    if(boardModel.rows[newHead.y].cells[newHead.x].hasApple){
+        boardModel.rows[newHead.y].cells[newHead.x].hasApple = false;
+        snake.size++;
+        placeApple();
+    }
+    else{
+        let tail = snake.position.splice(snake.size, 1);
+        tail = tail[0];
+        boardModel.rows[tail.y].cells[tail.x].hasBody = false;
+    }
 
     // Crash tests
     if(newHead.y<0 || newHead.y>=boardSize.height|| newHead.x<0 || newHead.x>=boardSize.width){
@@ -144,17 +154,7 @@ function move(){
         }
     }
     
-    snake.position.splice(0, 0, newHead);
-    if(boardModel.rows[newHead.y].cells[newHead.x].hasApple){
-        boardModel.rows[newHead.y].cells[newHead.x].hasApple = false;
-        snake.size++;
-        placeApple();
-    }
-    else{
-        let tail = snake.position.splice(snake.size, 1);
-        tail = tail[0];
-        boardModel.rows[tail.y].cells[tail.x].hasBody = false;
-    }
+    
 
     placeSnake();
     showBoard();
