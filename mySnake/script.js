@@ -50,17 +50,6 @@ function initBoardModel(){
     }
 }
 
-function placeApple(){
-    let y;
-    let x;
-    do{
-        y = Math.floor(Math.random()*boardSize.height);
-        x = Math.floor(Math.random()*boardSize.width);
-    } while(boardModel.rows[y].cells[x].hasBody);
-
-    boardModel.rows[y].cells[x].hasApple = true;
-}
-
 function placeSnake(){
     for(index in snake.position){
         y = snake.position[index].y;
@@ -76,6 +65,16 @@ function placeSnake(){
     }
 }
 
+function placeApple(){
+    let y;
+    let x;
+    do{
+        y = Math.floor(Math.random()*boardSize.height);
+        x = Math.floor(Math.random()*boardSize.width);
+    } while(boardModel.rows[y].cells[x].hasBody);
+
+    boardModel.rows[y].cells[x].hasApple = true;
+}
 
 
 function showBoard(){
