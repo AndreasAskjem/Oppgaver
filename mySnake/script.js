@@ -5,7 +5,7 @@ let boardSize = {
 }
 let boardModel;
 let boardView = document.getElementById('snakeTable');
-let startLength = 2;
+let startLength = 3;
 let gameSpeed = 200;
 
 let gameTick;
