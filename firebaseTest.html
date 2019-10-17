@@ -7,6 +7,10 @@
 </head>
 <body>
     
+<div>
+    Ny todo:
+    <input type="text" onkeydown="if(event.keyCode === 13) add(this);">
+</div>
 <div id="listOfStuff">Laster innhold...</div>
 
 
@@ -74,6 +78,17 @@
             let n = d.getTime();
             document.write( n );
         })*/
+
+
+        function add(inputTag){
+            let todoText = inputTag.value;
+            let todoDate = new Date();
+            let todoItem = {
+                todoText: todoText,
+                todoDate: todoDate
+            };
+            stuff.add(todoItem);
+        }
 </script>
 </body>
 </html>
