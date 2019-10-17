@@ -1,0 +1,79 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+<div id="listOfStuff">Laster innhold...</div>
+
+
+
+
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-firestore.js"></script>
+
+<script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyAbJmqEPuH6dtNC3V3XeUv-hj0d9RAgvE8",
+        authDomain: "start-it-db2b1.firebaseapp.com",
+        databaseURL: "https://start-it-db2b1.firebaseio.com",
+        projectId: "start-it-db2b1",
+        storageBucket: "start-it-db2b1.appspot.com",
+        messagingSenderId: "724233712182",
+        appId: "1:724233712182:web:2c2cfa2ab0acf04ec39e97",
+        measurementId: "G-EBH6RV7CSB"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    let db = firebase.firestore();
+    let stuff = db.collection('todoItems');//.doc('QhaI3RD76TqePfS1tVj5');
+
+    //stuff.get().then(
+    stuff.orderBy('todoDate').onSnapshot(// Ordered by date.
+        function(collectionSnapshot){
+            let html = '<ul>';
+            collectionSnapshot.forEach(
+                function(todoItemSnapshot){
+                    let todoItem = todoItemSnapshot.data();
+                    let todoDate = new Date(todoItem.todoDate.seconds * 1000);
+                    let dayOfMonth = todoDate.getDate();
+                    let month = todoDate.getMonth();
+                    let year = todoDate.getFullYear();
+                    let hours = todoDate.getHours();
+                    hours = (hours<10 ? '0' : '') + hours;
+                    let minutes = todoDate.getMinutes();
+                    minutes = ('0' + minutes).slice(-2);
+                    //minutes = (minutes<10 ? '0' : '') + minutes;
+
+                    todoDate = `${dayOfMonth}.${month}.${year} ${hours}:${minutes}`
+                    html += `<li>${todoItem.todoText} (${todoDate})`;
+                    //console.log(todoItemSnapshot.data());
+                }
+            )
+            html += '</ul>';
+            document.getElementById('listOfStuff').innerHTML = html;
+        }
+    )
+        /*.then(doc => {
+            const data = doc.data();
+            document.write( data.todoDate + `<br>` );
+            document.write( data.todoText + `<br>` );
+            let d = new Date();
+            let n = d.getTime();
+            document.write( n );
+        })*/
+</script>
+</body>
+</html>
