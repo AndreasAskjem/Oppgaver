@@ -44,14 +44,19 @@
     let db = firebase.firestore();
     let stuff = db.collection('todoItems');//.doc('QhaI3RD76TqePfS1tVj5');
 
-    let docList;
+    //async function
+
+    //let docList;
     //stuff.get().then(
     stuff.orderBy('todoDate').onSnapshot(// Ordered by date.
         function(collectionSnapshot){
             docList = collectionSnapshot;
             let html = '<ul>';
+            //console.log(collectionSnapshot.docs[0].id);
             collectionSnapshot.forEach(
                 function(todoItemSnapshot){
+                    //console.log(todoItemSnapshot.id)
+                    let todoItemId = todoItemSnapshot.id;
                     let todoItem = todoItemSnapshot.data();
                     let todoDate = new Date(todoItem.todoDate.seconds * 1000);
                     let dayOfMonth = todoDate.getDate();
@@ -64,7 +69,7 @@
                     //minutes = (minutes<10 ? '0' : '') + minutes;
 
                     let formattetDate = `${dayOfMonth}.${month}.${year} ${hours}:${minutes}`
-                    html += `<li onclick="deleteElement(this, ${todoItem.todoId})">${todoItem.todoText} ${formattetDate}</li>`;
+                    html += `<li id="${todoItemId}" onclick="deleteElement(this)">${todoItem.todoText} ${formattetDate}</li>`;
                     //console.log(html);
                     //console.log(todoItemSnapshot.data());
                 }
@@ -89,7 +94,6 @@
         let todoItem = {
             todoText: todoText,
             todoDate: todoDate
-            //todoId: identifier
         };
         //stuff = {todoText: todoText, todoDate: todoDate};
         stuff.add(todoItem);
@@ -97,45 +101,21 @@
     }
     let x;
     let y;
-    function deleteElement(element, clickedId){
+    function deleteElement(element){
+        
+        //console.log(element.id);
 
         docList.forEach(
             function(docList){
-                console.log(docList.data().todoText);
-                console.log(docList.data().path);
+                //console.log(docList.id);
+                if(element.id == docList.id){
+                    console.log(element.innerHTML);
+                    stuff.doc(`${docList.id}`).delete();
+                }
+                //console.log(docList(id));
+                //console.log(docList.data().path);
             }
         );
-
-
-        /*
-        console.log(stuff.path);
-        //console.log(stuff.todoItems);
-        y = stuff;
-        stuff.onSnapshot(// Ordered by date.
-            function(collectionSnapshot){
-                x = collectionSnapshot;
-                collectionSnapshot.forEach(
-                    function(todoItemSnapshot){
-                        //console.log(todoItemSnapshot.path);
-                        //console.log(todoItemSnapshot.data().todoId)
-                        let iteratedId = todoItemSnapshot.data().todoId;
-                        //condole.log()
-                        if(iteratedId == clickedId){
-                            //console.log(todoItemSnapshot);
-                            delete(todoItemSnapshot);
-                        }
-                        //let dateOfDocument = todoItemSnapshot.data().todoDate;
-                        //console.log(dateOfClickedElement);
-                        
-                    }
-                )
-            }
-        )
-        */
-
-
-        //stuff.remove(element)
-        //console.log(element);
     }
 </script>
 </body>
