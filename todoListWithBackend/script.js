@@ -1,7 +1,94 @@
-let tasks = [
-    {description: 'Handle til middag', isDone: true, person: 'Bob'},
-    {description: 'Lage middag', isDone: false, person: ''}
-]
+var firebaseConfig = {
+    apiKey: "AIzaSyAbJmqEPuH6dtNC3V3XeUv-hj0d9RAgvE8",
+    authDomain: "start-it-db2b1.firebaseapp.com",
+    databaseURL: "https://start-it-db2b1.firebaseio.com",
+    projectId: "start-it-db2b1",
+    storageBucket: "start-it-db2b1.appspot.com",
+    messagingSenderId: "724233712182",
+    appId: "1:724233712182:web:2c2cfa2ab0acf04ec39e97",
+    measurementId: "G-EBH6RV7CSB"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+
+let db = firebase.firestore();
+let tableRef = db.collection('todoTable');//.doc('QhaI3RD76TqePfS1tVj5');
+
+let tasks = [];
+
+tableRef.orderBy('deadline').onSnapshot(
+    function(collectionSnapshot){
+        let tableHTML = `
+            <tr>
+                <th>Oppgave</th>
+                <th>Person</th>
+                <th>Frist</th>
+                <th>Gjort dato</th>
+                <th>Gjort</th>
+                <th></th>
+            </tr>
+            `;
+        docList = collectionSnapshot;
+        
+        tasks = [];
+
+        for(let i=0; i<collectionSnapshot.docs.length; i++){
+            let taskId = collectionSnapshot.docs[i].id;
+            let task = collectionSnapshot.docs[i].data();
+            
+
+            tasks.push(
+                {
+                    description: task.description,
+                    person:      task.person,
+                    deadline:    task.deadline.toDate().toISOString().substr(0,10),
+                    doneDate:    task.doneDate,
+                    isDone:      task.isDone
+                }
+            )
+            
+            tableHTML += createHtmlRow(i, taskId);
+        }
+
+        document.getElementById('tasksTable').innerHTML = tableHTML;
+    }
+)
+
+
+function createHtmlRow(i, id){
+    let task = tasks[i];
+    const checkedHTML = task.isDone ? 'checked="checked"' : '';
+    if (!task.editMode) {
+        return `
+            <tr>
+                <td>${task.description}</td>
+                <td>${task.person}</td>
+                <td>${task.deadline}</td>
+                <td>${task.doneDate}</td>
+                <td><input type="checkbox" ${checkedHTML} onchange="changeIsDone(this, ${id})"/></td>
+                <td>
+                    <button onclick="deleteTask(${id})">Slett</button>
+                    <button onclick="editTask(${id})">Endre</button>
+                </td>
+            </tr>
+            `;
+    }
+    return `
+        <tr>
+            <td><input class="tableEdit" id="editDescription${id}" type="text" value="${task.description}"></td>
+            <td><input class="tableEdit" id="editPerson${id}" type="text" value="${task.person}"></td>
+            <td><input class="tableEdit" id="editDate${id}" type="date"/></td>
+            <td>${task.doneDate}</td>
+            <td><input type="checkbox" ${checkedHTML} onchange="changeIsDone(this, ${id})"/></td>
+            <td>
+                <button onclick="updateTask(${id})">Lagre</button>
+            </td>
+        </tr>
+        `; /////////// Probably need to fix some ID stuff.
+}
+
+
 
 
 let taskDescriptionInput = document.getElementById("taskDescription");
@@ -104,7 +191,7 @@ function editTask(index){
     show();
 }
 
-function updateTask(index){
+function updateTask(id){ /////// start here?
     const task = tasks[index]
 
     const descriptionId = `editDescription${index}`;
