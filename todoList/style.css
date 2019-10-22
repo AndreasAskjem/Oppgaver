@@ -1,16 +1,31 @@
-table, tr, td, th {
+#tasksTable, tr, td, th {
     border: 1px solid gray;
     border-collapse: collapse;
 }
 
-td, th {
+#tasksTable td, #tasksTable th, #tasksTable tr {
     padding: 4px;
 }
 
-th {
+#tasksTable th {
+    min-width: 80px;
     background-color: darkblue;
     color: white;
 }
-tr:nth-child(even) {
+#tasksTable tr:nth-child(even) {
     background-color: antiquewhite;
+}
+
+.tableEdit{
+    width: 130px;
+}
+
+
+#inputTable, #inputTable tr, #inputTable td{
+    border: 0px solid black;
+    border-collapse: collapse;
+}
+
+.tableInput{
+    width: 180px;
 }
