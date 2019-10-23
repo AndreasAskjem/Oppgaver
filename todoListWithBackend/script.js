@@ -25,7 +25,7 @@ tableRef.orderBy('deadline').onSnapshot(
         for(let i=0; i<collectionSnapshot.docs.length; i++){
             let taskId = collectionSnapshot.docs[i].id;
             let task = collectionSnapshot.docs[i].data();
-            
+
             tasks.push(
                 {
                     description: task.description,
@@ -100,6 +100,7 @@ let taskDescriptionInput = document.getElementById("taskDescription");
 let taskPersonInput = document.getElementById('taskPerson');
 let taskDeadlineInput = document.getElementById('taskDeadline');
 function addTask(){
+    console.log('hello');
     const newTaskDescription = taskDescriptionInput.value;
     const newPerson = taskPersonInput.value;
     const newDeadline = taskDeadlineInput.value;//.toISOString().substr(0,10);
@@ -109,14 +110,13 @@ function addTask(){
         isDone: false,
         person: newPerson,
         deadline: newDeadline,
-        //doneDate: ''
+        doneDate: ''
     };
     tableRef.add(newTask);
     
     taskDescriptionInput.value = '';
     taskPersonInput.value = '';
     taskDeadlineInput.value = '';
-    taskDescriptionInput.focus();
 }
 
 
@@ -187,6 +187,4 @@ function updateTask(element){
             }
         }
     );
-    
-    show();
 }
