@@ -13,24 +13,13 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 let db = firebase.firestore();
-let tableRef = db.collection('todoTable');//.doc('QhaI3RD76TqePfS1tVj5');
+let tableRef = db.collection('todoTable');
 
 let tasks = [];
 
 tableRef.orderBy('deadline').onSnapshot(
     function(collectionSnapshot){
-        /*let tableHTML = `
-            <tr>
-                <th>Oppgave</th>
-                <th>Person</th>
-                <th>Frist</th>
-                <th>Gjort dato</th>
-                <th>Gjort</th>
-                <th></th>
-            </tr>
-            `;*/
         docList = collectionSnapshot;
-        
         tasks = [];
 
         for(let i=0; i<collectionSnapshot.docs.length; i++){
@@ -41,16 +30,14 @@ tableRef.orderBy('deadline').onSnapshot(
                 {
                     description: task.description,
                     person:      task.person,
-                    deadline:    task.deadline, //.toDate().toISOString().substr(0,10),
+                    deadline:    task.deadline,
                     doneDate:    task.doneDate,
                     isDone:      task.isDone,
-                    id:          taskId
+                    id:          taskId,
+                    editMode:    false
                 }
             )
-            //tableHTML += createHtmlRow(i, taskId);
         }
-        //document.getElementById('tasksTable').innerHTML = tableHTML;
-
         show();
     }
 )
@@ -85,10 +72,10 @@ function createHtmlRow(i){
                 <td>${task.person}</td>
                 <td>${task.deadline}</td>
                 <td>${task.doneDate}</td>
-                <td><input type="checkbox" ${checkedHTML} onchange="changeIsDone(this, ${id})"/></td>
+                <td><input id="${id}" type="checkbox" ${checkedHTML} onchange="changeIsDone(this)"/></td>
                 <td>
                     <button id="${id}" onclick="deleteTask(this)">Slett</button>
-                    <button onclick="editTask(${id})">Endre</button>
+                    <button id="${id}" onclick="editTask(this)">Endre</button>
                 </td>
             </tr>
             `;
@@ -99,14 +86,13 @@ function createHtmlRow(i){
             <td><input class="tableEdit" id="editPerson${id}" type="text" value="${task.person}"></td>
             <td><input class="tableEdit" id="editDate${id}" type="date"/></td>
             <td>${task.doneDate}</td>
-            <td><input type="checkbox" ${checkedHTML} onchange="changeIsDone(this, ${id})"/></td>
+            <td><input id="${id}" type="checkbox" ${checkedHTML} onchange="changeIsDone(this)"/></td>
             <td>
-                <button onclick="updateTask(${id})">Lagre</button>
+                <button id="${id}" onclick="updateTask(this)">Lagre</button>
             </td>
         </tr>
-        `; /////////// Probably need to fix some ID stuff.
+        `;
 }
-
 
 
 
@@ -118,14 +104,12 @@ function addTask(){
     const newPerson = taskPersonInput.value;
     const newDeadline = taskDeadlineInput.value;//.toISOString().substr(0,10);
 
-    console.log(newDeadline);
-
     let newTask = {
         description: newTaskDescription,
         isDone: false,
         person: newPerson,
         deadline: newDeadline,
-        doneDate: ''
+        //doneDate: ''
     };
     tableRef.add(newTask);
     
@@ -135,57 +119,74 @@ function addTask(){
     taskDescriptionInput.focus();
 }
 
-taskDescriptionInput.focus();
-let tasksTable = document.getElementById('tasksTable');
 
+function changeIsDone(checkbox){
+    let id = checkbox.id;
 
-function changeIsDone(checkbox, id){
-    console.log('test');
-    let task = tableRef.doc(id);
-    console.log(task);
-    task.isDone = checkbox.checked;
+    let doneDate = new Date().toISOString().substr(0,10);
 
-    let currentDate = new Date().toISOString().substr(0,10);
-    task.doneDate = task.isDone ? currentDate : '';
-    show();
+    for(i in tasks){
+        if(id === tasks[i].id){
+            if(tasks[i].isDone){
+                tableRef.doc(id).set({
+                    isDone: false,
+                    doneDate: ''
+                }, {merge: true});
+            }
+            else{
+                tableRef.doc(id).set({
+                    isDone: true,
+                    doneDate: doneDate
+                }, {merge: true});
+            }
+        }
+    }
 }
 
 function deleteTask(element){
-    console.log('aaaaaaaaa');
     tasks.forEach(
         function(task){
-            //console.log(docList.id);
             if(element.id == task.id){
-                console.log(element.innerHTML);
                 tableRef.doc(`${task.id}`).delete();
             }
-            //console.log(docList(id));
-            //console.log(docList.data().path);
         }
     );
-    //tasks.splice(index, 1);
-    //show();
 }
-function editTask(index){
-    tasks[index].editMode = !tasks[index].editMode;
+
+//Turns on edit mode
+function editTask(element){
+    for(i in tasks){
+        if(element.id === tasks[i].id){
+            tasks[i].editMode = !tasks[i].editMode;
+        }
+    }
     show();
 }
 
-function updateTask(id){ /////// start here?
-    const task = tasks[index]
 
-    const descriptionId = `editDescription${index}`;
+function updateTask(element){
+    let id = element.id;
+    let updatedTask = {};
+
+    const descriptionId = `editDescription${id}`;
     const inputTag = document.getElementById(descriptionId);
-    task.description = inputTag.value;
+    updatedTask.description = inputTag.value;
 
-    const personId = `editPerson${index}`;
+    const personId = `editPerson${id}`;
     const inputPerson = document.getElementById(personId);
-    task.person = inputPerson.value;
+    updatedTask.person = inputPerson.value;
 
-    const dateId = `editDate${index}`;
+    const dateId = `editDate${id}`;
     const inputDate = document.getElementById(dateId);
-    task.deadline = inputDate.value;
+    updatedTask.deadline = inputDate.value;
 
-    tasks[index].editMode = false;
+    tasks.forEach(
+        function(task){
+            if(id == task.id){
+                tableRef.doc(id).set(updatedTask, {merge: true});
+            }
+        }
+    );
+    
     show();
 }
