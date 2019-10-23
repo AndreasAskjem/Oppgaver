@@ -9,24 +9,27 @@
 
 <body>
     
-<table id="tasksTable"></table>
+<table id="tasksTable"><tr><td>Laster...</td></tr></table>
 <br/>
 
 <table id=inputTable>
     <tr>
         <td>Oppgave:</td>
-        <td><input class="tableInput" id="taskDescription" type="text" onkeydown="if(event.keyCode === 13) addTask();"/></td>
+        <td><input class="tableInput" id="taskDescription" type="text"/></td>
     </tr>
     <tr>
         <td>Person:</td>
-        <td><input class="tableInput" id="taskPerson" type="text" onkeydown="if(event.keyCode === 13) addTask();"/></td>
+        <td><input class="tableInput" id="taskPerson" type="text"/></td>
     </tr>
     <tr>
         <td>Tidsfrist:</td>
-        <td><input class="tableInput" id="taskDeadline" type="date" onkeydown="if(event.keyCode === 13) addTask();"/></td>
+        <td><input class="tableInput" id="taskDeadline" type="date"/></td>
     </tr>
 </table>
 <button onclick="addTask()">Legg til oppgave</button>
+
+
+
 <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
 
