@@ -10,9 +10,19 @@ let unopenedEmptyCells = size.width*size.height - totalMines;
 let availableFlags = totalMines;
 let flagMode = false;
 let result = '';
+let difficulty = 'easy';
+
+let highscores = {
+    easy: [],
+    medium: [],
+    hard: []
+};
+let scoresHtml;
+let highscoreTable = document.getElementById('highscoreTable');
 
 init(size);
 showMineField();
+showHighscores();
 
 function init(size){
     mineFieldModel = {};
@@ -79,7 +89,7 @@ function showMineField(){
 
     let resultText = document.getElementById('resultDiv')
     if(result==='youWon'){
-        resultText.innerHTML = 'Congratulations! You won!';
+        resultText.innerHTML = `Congratulations! You won!<br/>Your time was <strong>${passedTime}</strong>.`;
     }
     else if(result==='youLost'){
         resultText.innerHTML = 'Sorry, you lost.';
@@ -89,8 +99,51 @@ function showMineField(){
     }
 }
 
+
+function showHighscores(){
+    scoresHtml = `
+    <tr>
+        <th><strong>Highscores ${difficulty}:<strong></th>
+    </tr>`;
+
+    if(difficulty === 'easy'){
+        highscores.easy.forEach(createScoreRow);
+    }
+    else if(difficulty === 'medium'){
+        highscores.medium.forEach(createScoreRow);
+    }
+    else if(difficulty === 'hard'){
+        highscores.hard.forEach(createScoreRow);
+    }
+
+    highscoreTable.innerHTML = scoresHtml;
+}
+
+function createScoreRow(score){
+    scoresHtml += `
+        <tr>
+            <td>${score}</td>
+        <tr>
+        `;
+}
+
+
+let timer; // Variable containing the setInterval() function with timerUpdate()
+let passedTime;
+let startTime;
+function timerUpdate(){
+    let currentTime = new Date;
+    passedTime = (currentTime - startTime)/1000;
+
+    let output = Math.floor(passedTime + 0.001);
+    output = ('00' + output).slice(-3);
+    document.getElementById('timer').innerHTML = output;
+    //console.log(output);
+}
+
 // Resets some variables, sets new values to others, and draws the board again.
-function setDifficulty(newHeight, newWidth, newTotalMines){
+function setDifficulty(newHeight, newWidth, newTotalMines, selectedDifficulty){
+    difficulty = selectedDifficulty;
     size.height = newHeight;
     size.width = newWidth;
     totalMines = newTotalMines;
@@ -99,8 +152,12 @@ function setDifficulty(newHeight, newWidth, newTotalMines){
     flagMode = false;
     firstClick = true;
     result = '';
+    // Stop and reset timer /////////////////////////////////////////////////////////////////////////////////////////////////
+    clearInterval(timer);
+    document.getElementById('timer').innerHTML = '000';
     init(size);
     showMineField();
+    showHighscores();
 }
 
 function toggleFlagMode(){
@@ -116,7 +173,7 @@ function clickedSquare(mouseClick){
     let cellIndex = mouseClick.srcElement.cellIndex;
     let modelCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
 
-    if(flagMode && !firstClick){
+    if((flagMode || mouseClick.ctrlKey) && !firstClick){
         modelCell.hasFlag = !modelCell.hasFlag;
         modelCell.hasFlag ? availableFlags-- : availableFlags ++;
         showMineField();
@@ -134,8 +191,12 @@ function clickedSquare(mouseClick){
                 return;
             }
             clickedSquare(mouseClick);
+            return;
         }
         firstClick = false;
+        startTime = new Date();
+        timer = setInterval(timerUpdate, 1000);
+        //Start timer/////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     if(modelCell.hasFlag){return;}
@@ -156,7 +217,7 @@ function openCell(rowIndex, cellIndex){
     if(modelCell.isOpen){return;}
     if(!modelCell.hasMine){unopenedEmptyCells--;}
     modelCell.isOpen = true;
-    console.log(unopenedEmptyCells);
+    //console.log(unopenedEmptyCells);
 
     if(unopenedEmptyCells === 0 || modelCell.hasMine){
         endTheGame(modelCell.hasMine);
@@ -185,9 +246,31 @@ function endTheGame(clickedCellHadMine){
     }
     else{
         result = 'youWon';
+        timerUpdate();
+        passedTime = passedTime.toFixed(3);
+        highscoresUpdate();
     }
+    clearInterval(timer);
+    //Stop timer//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
+
+// Puts the lates time in the highscore table.
+function highscoresUpdate(){
+    if(difficulty === 'easy'){
+        highscores.easy.push(passedTime);
+        highscores.easy.sort(function(a, b){return a - b});
+    }
+    else if(difficulty === 'medium'){
+        highscores.medium.push(passedTime);
+        highscores.medium.sort(function(a, b){return a - b});
+    }
+    else if(difficulty === 'hard'){
+        highscores.hard.push(passedTime);
+        highscores.hard.sort(function(a, b){return a - b});
+    }
+    showHighscores();
+}
 
 function placeMines(){
     // Gets a shiffled list with the correct amount of mines.
