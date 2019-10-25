@@ -187,6 +187,7 @@ function clickedSquare(mouseClick){
             minePlacementRetries++;
             if(minePlacementRetries>100){
                 firstClick = false;
+                minePlacementRetries = 0;
                 return;
             }
             clickedSquare(mouseClick);
