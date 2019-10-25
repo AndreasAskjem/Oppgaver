@@ -1,4 +1,3 @@
-
 let mineFieldModel;
 let mineFieldView = document.getElementById('mineField');
 let totalMines = 10;
