@@ -99,10 +99,25 @@ table{
 #highscoreTable, #highscoreTable th, #highscoreTable td{
     margin-top: 20px;
     margin-left: 20px;
+    width: 250px;
     text-align: center;
     padding: 4px;
     border: 1px solid black;
 }
 #highscoreTable th{
     font-size: 25px;
+}
+
+
+
+
+
+@media only screen and (max-width: 1230px){
+    #wrapper{
+        display: grid;
+        grid-template-rows: auto auto;
+        grid-template-columns: auto 1fr;
+        grid-template-areas: 'game .'
+                             'highscores .';
+    }
 }
