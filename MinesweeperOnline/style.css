@@ -1,0 +1,123 @@
+#wrapper{
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    grid-template-areas: 'game highscores .';
+}
+#game{
+    grid-area: game;
+}
+#highscores{
+    grid-area: highscores;
+}
+
+
+.square{
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+#flagCounter{
+    background: white;
+    border: black solid 2px;
+    float: left;
+    padding-top: 3px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#flagBox{
+    float: left;
+    background: gray;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px;
+}
+
+.redBorder{
+    border: 2px solid red;
+    padding-top: 3px;
+    line-height: 31px !important;
+}
+
+#timer{
+    height: 32px;
+    width: 50px;
+    padding: 2px;
+    float: right;
+    font-size: 28px;
+    border: 2px solid black;
+    text-align: center;
+    font-weight: bold;
+}
+
+#mineField tr, #mineField td{
+    border: 1px solid gray;
+    height: 30px;
+    width: 30px;
+    font-size: 18px;
+    text-align: center;
+    user-select: none;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+table{
+    border-spacing: 0;
+    border-collapse: collapse;
+    clear: left;
+}
+
+.x1{
+    color: blue;
+}
+.x2{
+    color: green;
+}
+.x3{
+    color: red;
+}
+.x4{
+    color: purple;
+}
+.x5{
+    color: maroon;
+}
+.x6{
+    color: turquoise;
+}
+.x7{
+    color: black;
+}
+.x8{
+    color: gray;
+}
+
+
+#highscoreTable, #highscoreTable th, #highscoreTable td{
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 250px;
+    text-align: center;
+    padding: 4px;
+    border: 1px solid black;
+}
+#highscoreTable th{
+    font-size: 25px;
+}
+
+
+
+
+
+@media only screen and (max-width: 1230px){
+    #wrapper{
+        display: grid;
+        grid-template-rows: auto auto;
+        grid-template-columns: auto 1fr;
+        grid-template-areas: 'game .'
+                             'highscores .';
+    }
+}
