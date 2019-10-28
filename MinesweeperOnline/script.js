@@ -1,4 +1,3 @@
-
 let mineFieldModel;
 // let mineFieldView = document.getElementById('mineField');
 let mineFieldView;
@@ -14,9 +13,36 @@ let result = '';
 let difficulty = 'easy';
 
 let highscores = {
-    easy: [],
-    medium: [],
-    hard: []
+    easy: [
+        {
+            name: 'John',
+            score: 15
+        },
+        {
+            name: 'Bob',
+            score: 123
+        }
+    ],
+    medium: [
+        {
+            name: 'Jim',
+            score: 234
+        },
+        {
+            name: 'Bob',
+            score: 345
+        }
+    ],
+    hard: [
+        {
+            name: 'Bob',
+            score: 456
+        },
+        {
+            name: 'Bob',
+            score: 567
+        }
+    ]
 };
 let scoresHtml;
 // let highscoreTable = document.getElementById('highscoreTable');
@@ -25,6 +51,56 @@ let highscoreTable;
 // init(size);
 // showMineField();
 // showHighscores();
+
+// Your web app's Firebase configuration
+var firebaseConfig = {
+    apiKey: "AIzaSyDTHUONr-GO1z82YI_UnmDhDV_q6uy7YlI",
+    authDomain: "minesweeper-bc83f.firebaseapp.com",
+    databaseURL: "https://minesweeper-bc83f.firebaseio.com",
+    projectId: "minesweeper-bc83f",
+    storageBucket: "minesweeper-bc83f.appspot.com",
+    messagingSenderId: "125400385553",
+    appId: "1:125400385553:web:1034cc9f090a545e0949b0",
+    measurementId: "G-PR0G55ERGT"
+};
+  // Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+let db = firebase.firestore();
+//let easyRef = db.collection('easy');
+//let mediumRef = db.collection('medium');
+//let hardRef = db.collection('hard');
+
+let somevariable;
+
+async function loadContent(){
+    try{
+        //let collection = db.collection('easy');
+        await getHighscores('easy');
+        await getHighscores('medium');
+        await getHighscores('hard');
+        //await getHighscores();
+    }
+    catch{
+
+    }
+}
+
+async function getHighscores(getDifficulty){
+    let collectionSnapshot = db.collection(getDifficulty);
+    console.log('hello');
+    return new Promise(function(resolve, reject){
+        //console.log(collectionSnapshot);
+        collectionSnapshot.orderBy('score').once(
+            function(collection){
+                console.log(collection);
+            }
+            
+        )
+        resolve;
+    })
+}
+
 
 function init(size){
     mineFieldView = document.getElementById('mineField');
@@ -128,7 +204,8 @@ function showHighscores(){
 function createScoreRow(score){
     scoresHtml += `
         <tr>
-            <td>${score}</td>
+            <td>${score.name}</td>
+            <td>${score.score}</td>
         <tr>
         `;
 }
