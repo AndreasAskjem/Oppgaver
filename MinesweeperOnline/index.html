@@ -9,12 +9,14 @@
 </head>
 <body>
 <div id="wrapper">
-    
-    <h1>Minesweeper</h1><br>
-    <p>Select nickname, or leave empty to play anonymously.</p><br>
-    <input type="text" id="nameInput" autocomplete="off" onkeydown="if(event.keyCode === 13) setName();"><br>
-    <button type="button" onclick="setName()">Start Game</button>
-    
+<div id="game">
+    <h1>Minesweeper</h1>
+    <div>
+        <div>Select nickname, or leave empty to play anonymously.</div>
+        <input type="text" id="nameInput" maxlength="10" size="15" autocomplete="off" onkeydown="if(event.keyCode === 13) setName();"><br>
+        <button type="button" onclick="setName()" style="width:128px; height:40px">Start Game</button>
+</div>
+</div>
     <!-- <div id="game">
         <h1>Minesweeper</h1>
 
