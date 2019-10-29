@@ -303,7 +303,7 @@ function openCell(rowIndex, cellIndex){
         return;
     }
     let modelCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
-    if(modelCell.isOpen){return;}
+    if(modelCell.isOpen || modelCell.hasFlag){return;}
     if(!modelCell.hasMine){unopenedEmptyCells--;}
     modelCell.isOpen = true;
     //console.log(unopenedEmptyCells);
