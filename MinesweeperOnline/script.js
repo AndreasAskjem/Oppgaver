@@ -185,7 +185,7 @@ function showMineField(){
 function showHighscores(){
     scoresHtml = `
     <tr>
-        <th><strong>Highscores ${difficulty}:<strong></th>
+        <th colspan="2"><strong>Highscores ${difficulty}:<strong></th>
     </tr>`;
 
     if(difficulty === 'easy'){
