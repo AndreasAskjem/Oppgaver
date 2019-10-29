@@ -12,7 +12,7 @@ let flagMode = false;
 let result = '';
 let difficulty = 'easy';
 
-let highscores = {
+/*let highscores = {
     easy: [
         {
             name: 'John',
@@ -43,7 +43,8 @@ let highscores = {
             score: 567
         }
     ]
-};
+};*/
+
 let scoresHtml;
 // let highscoreTable = document.getElementById('highscoreTable');
 let highscoreTable;
@@ -67,37 +68,39 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 let db = firebase.firestore();
-//let easyRef = db.collection('easy');
-//let mediumRef = db.collection('medium');
-//let hardRef = db.collection('hard');
+let easyRef = db.collection('easy');
+let mediumRef = db.collection('medium');
+let hardRef = db.collection('hard');
 
-let somevariable;
+let highscores = {};
 
+loadContent();
 async function loadContent(){
     try{
-        //let collection = db.collection('easy');
-        await getHighscores('easy');
-        await getHighscores('medium');
-        await getHighscores('hard');
-        //await getHighscores();
+        highscores.easy = await getHighscores('easy');
+        highscores.medium = await getHighscores('medium');
+        highscores.hard = await getHighscores('hard');
     }
-    catch{
-
-    }
+    catch{}
 }
 
-async function getHighscores(getDifficulty){
-    let collectionSnapshot = db.collection(getDifficulty);
-    console.log('hello');
-    return new Promise(function(resolve, reject){
-        //console.log(collectionSnapshot);
-        collectionSnapshot.orderBy('score').once(
-            function(collection){
-                console.log(collection);
-            }
-            
-        )
-        resolve;
+function getHighscores(getDifficulty){
+
+    return db.collection(getDifficulty).orderBy('score').get().then(function(collection){
+        if(collection != undefined){
+
+            let difficultyData = [];
+            collection.forEach(function(element){
+                let newObject = {
+                    name: element.data().name,
+                    score: element.data().score,
+                    id: element.id
+                };
+                difficultyData.push(newObject)
+            });
+            return(difficultyData);
+        }
+        return Promise.reject("Error");
     })
 }
 
@@ -201,7 +204,10 @@ function showHighscores(){
     highscoreTable.innerHTML = scoresHtml;
 }
 
-function createScoreRow(score){
+function createScoreRow(score, index){
+    if(index >= 10){
+        return;
+    }
     scoresHtml += `
         <tr>
             <td>${score.name}</td>
@@ -235,7 +241,7 @@ function setDifficulty(newHeight, newWidth, newTotalMines, selectedDifficulty){
     flagMode = false;
     firstClick = true;
     result = '';
-    // Stop and reset timer /////////////////////////////////////////////////////////////////////////////////////////////////
+   
     clearInterval(timer);
     document.getElementById('timer').innerHTML = '000';
     init(size);
@@ -280,7 +286,6 @@ function clickedSquare(mouseClick){
         firstClick = false;
         startTime = new Date();
         timer = setInterval(timerUpdate, 1000);
-        //Start timer/////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     if(modelCell.hasFlag){return;}
@@ -331,23 +336,23 @@ function endTheGame(clickedCellHadMine){
     else{
         result = 'youWon';
         timerUpdate();
-        passedTime = passedTime.toFixed(3);
+        passedTime = parseFloat(passedTime.toFixed(3));
         highscoresUpdate();
     }
     clearInterval(timer);
-    //Stop timer//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 
 // Puts the lates time in the highscore table.
 function highscoresUpdate(){
+    // Updates table directly
     if(difficulty === 'easy'){
         highscores.easy.push({
             name: name,
             score: passedTime
         });
         
-        //highscores.easy.sort(function(a, b){return a - b});
+        highscores.easy.sort(function(a, b){return a.score - b.score});
     }
     else if(difficulty === 'medium'){
         highscores.medium.push({
@@ -355,7 +360,7 @@ function highscoresUpdate(){
             score: passedTime
         });
         
-        //highscores.medium.sort(function(a, b){return a - b});
+        highscores.medium.sort(function(a, b){return a.score - b.score});
     }
     else if(difficulty === 'hard'){
         highscores.hard.push({
@@ -363,9 +368,45 @@ function highscoresUpdate(){
             score: passedTime
         });
         
-        //highscores.hard.sort(function(a, b){return a - b});
+        highscores.hard.sort(function(a, b){return a.score - b.score});
     }
+
+    // Updates database
+    db.collection(difficulty).add({
+        name:name,
+        score: passedTime
+    });
+    removeExtraScores();
     showHighscores();
+}
+
+
+// Removes the slowest scores if there's more than 10.
+function removeExtraScores(){
+    if(difficulty === 'easy'){
+        highscores.easy.forEach(function(element, index){
+            if(index>9){
+                console.log(index);
+                easyRef.doc(highscores.easy[index].id).delete();
+            }
+        })
+    }
+    if(difficulty === 'medium'){
+        highscores.medium.forEach(function(element, index){
+            if(index>9){
+                console.log(index);
+                easyRef.doc(highscores.medium[index].id).delete();
+            }
+        })
+    }
+    if(difficulty === 'hard'){
+        highscores.hard.forEach(function(element, index){
+            if(index>9){
+                console.log(index);
+                easyRef.doc(highscores.hard[index].id).delete();
+            }
+        })
+    }
 }
 
 function placeMines(){
