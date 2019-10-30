@@ -91,10 +91,10 @@ function init(size){
 // Creates the shown HTML, with the correct values inserted.
 function showMineField(){
     mineFieldView.innerHTML = '';
-    for(i=0; i<size.height; i++){
+    for(let i=0; i<size.height; i++){
         let viewRow = mineFieldView.insertRow();
         let modelRow = mineFieldModel.rows[i];
-        for(j=0; j<size.width; j++){
+        for(let j=0; j<size.width; j++){
             let viewCell = viewRow.insertCell();
             let modelCell = modelRow.cells[j];
 
@@ -375,8 +375,8 @@ function placeMines(){
 
     // Places the mines in the cell objects
     let mineIndex = 0;
-    for(rowIndex=0; rowIndex<size.height; rowIndex++){
-        for(cellIndex=0; cellIndex<size.width; cellIndex++){
+    for(let rowIndex=0; rowIndex<size.height; rowIndex++){
+        for(let cellIndex=0; cellIndex<size.width; cellIndex++){
             currentCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
             currentCell.hasMine = mineArray[mineIndex];
             mineIndex++;
@@ -384,8 +384,8 @@ function placeMines(){
     }
 
     // Sends the coordinates of every cell to the function getAdjacentMines().
-    for(rowIndex=0; rowIndex<size.height; rowIndex++){
-        for(cellIndex=0; cellIndex<size.width; cellIndex++){
+    for(let rowIndex=0; rowIndex<size.height; rowIndex++){
+        for(let cellIndex=0; cellIndex<size.width; cellIndex++){
             currentCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
             currentCell.adjacentMines = getAdjacentMines(rowIndex, cellIndex);
         }
@@ -396,8 +396,8 @@ function placeMines(){
 // and puts it in the correct cell object.
 function getAdjacentMines(rowIndex, cellIndex){
     let mineCount = 0;
-    for(i=-1; i<2; i++){
-        for(j=-1; j<2; j++){
+    for(let i=-1; i<2; i++){
+        for(let j=-1; j<2; j++){
             let rowCheck = rowIndex + i;
             let cellCheck = cellIndex + j;
             
@@ -413,8 +413,8 @@ function getAdjacentMines(rowIndex, cellIndex){
 
 // Opens every mine. Only runs if a mine is opened.
 function openAllMines(){
-    for(rowIndex=0; rowIndex<size.height; rowIndex++){
-        for(cellIndex=0; cellIndex<size.width; cellIndex++){
+    for(let rowIndex=0; rowIndex<size.height; rowIndex++){
+        for(let cellIndex=0; cellIndex<size.width; cellIndex++){
             currentCell = mineFieldModel.rows[rowIndex].cells[cellIndex];
             if(currentCell.hasMine){
                 currentCell.isOpen = true;
@@ -428,7 +428,7 @@ function openAllMines(){
 function generateMines(){
     boardSize = size.height * size.width;
     mineArray = [];
-    for(i=0; i<boardSize; i++){
+    for(let i=0; i<boardSize; i++){
         i < totalMines ? mineArray.push(true) : mineArray.push(false);
     }
     return(shuffleArray(mineArray, boardSize));
@@ -438,7 +438,7 @@ function generateMines(){
 function shuffleArray(mineArray, boardSize){
     let randomElement;
     let shuffledArray = [];
-    for(i=boardSize; i>0; i--){
+    for(let i=boardSize; i>0; i--){
         randomElement = Math.floor(Math.random() * i);
         temp = mineArray.splice(randomElement, 1);
         shuffledArray.push(temp[0]);
