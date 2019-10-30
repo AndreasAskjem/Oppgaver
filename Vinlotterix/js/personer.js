@@ -68,8 +68,12 @@ function leggTilPerson() {
   
 function velgPerson(id) {
     const person = finnPerson(id);
-    if(person.erValgt){model.personer.velgAlle=false}////////////////////////////////    
     person.erValgt = !person.erValgt;
+
+    // Sjekker om alle personene er valgt eller ikke, og oppdaterer personer.velgAlle
+    let sjekkOmValgt = model.personer.liste.map( p => p.erValgt);
+    model.personer.velgAlle = sjekkOmValgt.reduce((sum, value) => sum && value);
+
     visPersoner();
 }
   
