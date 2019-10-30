@@ -12,41 +12,8 @@ let flagMode = false;
 let result = '';
 let difficulty = 'easy';
 
-/*let highscores = {
-    easy: [
-        {
-            name: 'John',
-            score: 15
-        },
-        {
-            name: 'Bob',
-            score: 123
-        }
-    ],
-    medium: [
-        {
-            name: 'Jim',
-            score: 234
-        },
-        {
-            name: 'Bob',
-            score: 345
-        }
-    ],
-    hard: [
-        {
-            name: 'Bob',
-            score: 456
-        },
-        {
-            name: 'Bob',
-            score: 567
-        }
-    ]
-};*/
 
 let scoresHtml;
-// let highscoreTable = document.getElementById('highscoreTable');
 let highscoreTable;
 
 // init(size);
@@ -64,7 +31,8 @@ var firebaseConfig = {
     appId: "1:125400385553:web:1034cc9f090a545e0949b0",
     measurementId: "G-PR0G55ERGT"
 };
-  // Initialize Firebase
+// Initialize Firebase
+
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 let db = firebase.firestore();
@@ -77,33 +45,25 @@ let highscores = {};
 loadContent();
 async function loadContent(){
     try{
-        highscores.easy = await getHighscores('easy');
-        highscores.medium = await getHighscores('medium');
-        highscores.hard = await getHighscores('hard');
+        let easyDoc = await easyRef.orderBy('score').get();
+        highscores.easy = easyDoc.docs.map(formatHighscores);
+
+        let mediumDoc = await mediumRef.orderBy('score').get();
+        highscores.medium = mediumDoc.docs.map(formatHighscores);
+
+        let hardDoc = await hardRef.orderBy('score').get();
+        highscores.hard = hardDoc.docs.map(formatHighscores);
     }
-    catch{}
+    catch(error){
+        console.error(error);
+    }
 }
 
-function getHighscores(getDifficulty){
-
-    return db.collection(getDifficulty).orderBy('score').get().then(function(collection){
-        if(collection != undefined){
-
-            let difficultyData = [];
-            collection.forEach(function(element){
-                let newObject = {
-                    name: element.data().name,
-                    score: element.data().score,
-                    id: element.id
-                };
-                difficultyData.push(newObject)
-            });
-            return(difficultyData);
-        }
-        return Promise.reject("Error");
-    })
+function formatHighscores(scoreDoc){
+    let scoreObject = scoreDoc.data()
+    scoreObject.id = scoreDoc.id;
+    return(scoreObject);
 }
-
 
 function init(size){
     mineFieldView = document.getElementById('mineField');
@@ -211,9 +171,9 @@ function createScoreRow(score, index){
     scoresHtml += `
         <tr>
             <td>${score.name}</td>
-            <td>${score.score}</td>
+            <td>${score.score.toFixed(3)}</td>
         <tr>
-        `;
+    `;
 }
 
 
