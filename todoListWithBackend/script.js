@@ -17,30 +17,27 @@ let tableRef = db.collection('todoTable');
 
 let tasks = [];
 
-tableRef.orderBy('deadline').onSnapshot(
-    function(collectionSnapshot){
-        docList = collectionSnapshot;
-        tasks = [];
+tableRef.onSnapshot(function(){
+    getData();
+});
 
-        for(let i=0; i<collectionSnapshot.docs.length; i++){
-            let taskId = collectionSnapshot.docs[i].id;
-            let task = collectionSnapshot.docs[i].data();
-
-            tasks.push(
-                {
-                    description: task.description,
-                    person:      task.person,
-                    deadline:    task.deadline,
-                    doneDate:    task.doneDate,
-                    isDone:      task.isDone,
-                    id:          taskId,
-                    editMode:    false
-                }
-            )
-        }
+async function getData(){
+    try{
+        let todoDoc = await tableRef.orderBy('deadline').get();
+        tasks = todoDoc.docs.map(docsToObjects);
         show();
     }
-)
+    catch(error){
+        console.error(error);
+    }
+}
+
+function docsToObjects(element){
+    let task = element.data()
+    task.id = element.id;
+    task.editMode = false;
+    return(task);
+}
 
 
 function show(){
@@ -55,7 +52,7 @@ function show(){
         </tr>
         `;
 
-    for(i in tasks){
+    for(let i=0; i<tasks.length; i++){
         tableHTML += createHtmlRow(i);
     }
     document.getElementById('tasksTable').innerHTML = tableHTML;
@@ -100,10 +97,9 @@ let taskDescriptionInput = document.getElementById("taskDescription");
 let taskPersonInput = document.getElementById('taskPerson');
 let taskDeadlineInput = document.getElementById('taskDeadline');
 function addTask(){
-    console.log('hello');
     const newTaskDescription = taskDescriptionInput.value;
     const newPerson = taskPersonInput.value;
-    const newDeadline = taskDeadlineInput.value;//.toISOString().substr(0,10);
+    const newDeadline = taskDeadlineInput.value;
 
     let newTask = {
         description: newTaskDescription,
@@ -122,69 +118,42 @@ function addTask(){
 
 function changeIsDone(checkbox){
     let id = checkbox.id;
-
     let doneDate = new Date().toISOString().substr(0,10);
+    let task = tasks.filter(t => t.id === id)[0];
 
-    for(i in tasks){
-        if(id === tasks[i].id){
-            if(tasks[i].isDone){
-                tableRef.doc(id).set({
-                    isDone: false,
-                    doneDate: ''
-                }, {merge: true});
-            }
-            else{
-                tableRef.doc(id).set({
-                    isDone: true,
-                    doneDate: doneDate
-                }, {merge: true});
-            }
-        }
-    }
+    doneDate = task.isDone ? '' : doneDate;
+    
+    tableRef.doc(id).set({
+        isDone: !task.isDone,
+        doneDate: doneDate},
+        {merge: true}
+    );
 }
 
 function deleteTask(element){
-    tasks.forEach(
-        function(task){
-            if(element.id == task.id){
-                tableRef.doc(`${task.id}`).delete();
-            }
-        }
-    );
+    tableRef.doc(element.id).delete()
 }
 
 //Turns on edit mode
 function editTask(element){
-    for(i in tasks){
-        if(element.id === tasks[i].id){
-            tasks[i].editMode = !tasks[i].editMode;
-        }
-    }
+    let index = tasks.map(t => t.id).indexOf(element.id);
+    tasks[index].editMode = !tasks[index].editMode;
     show();
 }
 
-
+//Adds new document to the database
 function updateTask(element){
     let id = element.id;
     let updatedTask = {};
 
-    const descriptionId = `editDescription${id}`;
-    const inputTag = document.getElementById(descriptionId);
+    const inputTag = document.getElementById(`editDescription${id}`);
     updatedTask.description = inputTag.value;
 
-    const personId = `editPerson${id}`;
-    const inputPerson = document.getElementById(personId);
+    const inputPerson = document.getElementById(`editPerson${id}`);
     updatedTask.person = inputPerson.value;
 
-    const dateId = `editDate${id}`;
-    const inputDate = document.getElementById(dateId);
+    const inputDate = document.getElementById(`editDate${id}`);
     updatedTask.deadline = inputDate.value;
 
-    tasks.forEach(
-        function(task){
-            if(id == task.id){
-                tableRef.doc(id).set(updatedTask, {merge: true});
-            }
-        }
-    );
+    tableRef.doc(id).set(updatedTask, {merge: true});
 }
