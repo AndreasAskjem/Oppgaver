@@ -23,7 +23,9 @@ let gameHtml = `
     <div id="resultDiv" style="font-size:25px"></div>
 </div>
 <div id="highscores">
-    <table id="highscoreTable"></table>
+    <table id="highscoreTable">
+        <tr><td>Loading Highscores...</td></td>
+    </table>
 </div>
 <script src="script.js"></script>`
 
@@ -33,7 +35,6 @@ nameInput.focus();
 let name;
 function setName(){
     name = nameInput.value;
-    console.log(name.length);
     if(name.length > 10){
         alert('Please pick a nickname at 10 characters or shorter');
         nameInput.value = '';
@@ -43,12 +44,12 @@ function setName(){
     if(name === ''){
         name = 'Anonymous';
     }
-    console.log(name);
     document.getElementById('wrapper').innerHTML = gameHtml;
 
     init(size);
     showMineField();
-    if(highscoreTable === undefined){
+    gameIsLoaded = true;
+    if(dataIsLoaded){
         showHighscores();
     }
 }

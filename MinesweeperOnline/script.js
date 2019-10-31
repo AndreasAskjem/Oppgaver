@@ -42,6 +42,9 @@ let hardRef = db.collection('hard');
 
 let highscores = {};
 
+let dataIsLoaded = false;
+let gameIsLoaded = false;
+
 loadContent();
 async function loadContent(){
     try{
@@ -54,9 +57,10 @@ async function loadContent(){
         let hardDoc = await hardRef.orderBy('score').get();
         highscores.hard = hardDoc.docs.map(formatHighscores);
 
-        if(highscoreTable !== undefined){
+        if(gameIsLoaded){
             showHighscores();
         }
+        dataIsLoaded = true;
     }
     catch(error){
         console.error(error);
@@ -210,7 +214,9 @@ function setDifficulty(newHeight, newWidth, newTotalMines, selectedDifficulty){
     document.getElementById('timer').innerHTML = '000';
     init(size);
     showMineField();
-    showHighscores();
+    if(dataIsLoaded){
+        showHighscores();
+    }
 }
 
 function toggleFlagMode(){
@@ -310,36 +316,28 @@ function endTheGame(clickedCellHadMine){
 // Puts the lates time in the highscore table.
 function highscoresUpdate(){
     // Updates table directly
+    let obj = {
+        name: name,
+        score: passedTime
+    }
     if(difficulty === 'easy'){
-        highscores.easy.push({
-            name: name,
-            score: passedTime
-        });
+        highscores.easy.push(obj);
         
         highscores.easy.sort(function(a, b){return a.score - b.score});
     }
     else if(difficulty === 'medium'){
-        highscores.medium.push({
-            name: name,
-            score: passedTime
-        });
+        highscores.medium.push(obj);
         
         highscores.medium.sort(function(a, b){return a.score - b.score});
     }
     else if(difficulty === 'hard'){
-        highscores.hard.push({
-            name: name,
-            score: passedTime
-        });
+        highscores.hard.push(obj);
         
         highscores.hard.sort(function(a, b){return a.score - b.score});
     }
 
     // Updates database
-    db.collection(difficulty).add({
-        name:name,
-        score: passedTime
-    });
+    db.collection(difficulty).add(obj);
     removeExtraScores();
     showHighscores();
 }
@@ -350,7 +348,6 @@ function removeExtraScores(){
     if(difficulty === 'easy'){
         highscores.easy.forEach(function(element, index){
             if(index>9){
-                console.log(index);
                 easyRef.doc(highscores.easy[index].id).delete();
             }
         })
@@ -358,7 +355,6 @@ function removeExtraScores(){
     if(difficulty === 'medium'){
         highscores.medium.forEach(function(element, index){
             if(index>9){
-                console.log(index);
                 easyRef.doc(highscores.medium[index].id).delete();
             }
         })
@@ -366,7 +362,6 @@ function removeExtraScores(){
     if(difficulty === 'hard'){
         highscores.hard.forEach(function(element, index){
             if(index>9){
-                console.log(index);
                 easyRef.doc(highscores.hard[index].id).delete();
             }
         })
@@ -444,7 +439,7 @@ function shuffleArray(mineArray, boardSize){
     let shuffledArray = [];
     for(let i=boardSize; i>0; i--){
         randomElement = Math.floor(Math.random() * i);
-        temp = mineArray.splice(randomElement, 1);
+        let temp = mineArray.splice(randomElement, 1);
         shuffledArray.push(temp[0]);
     }
     return(shuffledArray);
