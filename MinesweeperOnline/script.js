@@ -53,6 +53,10 @@ async function loadContent(){
 
         let hardDoc = await hardRef.orderBy('score').get();
         highscores.hard = hardDoc.docs.map(formatHighscores);
+
+        if(highscoreTable !== undefined){
+            showHighscores();
+        }
     }
     catch(error){
         console.error(error);

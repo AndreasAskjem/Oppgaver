@@ -48,5 +48,7 @@ function setName(){
 
     init(size);
     showMineField();
-    showHighscores();
+    if(highscoreTable === undefined){
+        showHighscores();
+    }
 }
