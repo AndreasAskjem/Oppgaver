@@ -21,7 +21,7 @@ class Box {
 
 class BoxSet{
     constructor(){
-        let length = 100; //Math.ceil(Math.random()*10);
+        let length = Math.ceil(Math.random()*10);
         this._boxes = []
         for(let i=0; i<length; i++){
             this._boxes.push(new Box());
